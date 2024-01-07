@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add font from assets/fonts/terminal */
+@font-face {
+  font-family: "terminal";
+  src: url("./assets/fonts/terminal/VT323-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}

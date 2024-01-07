@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "server": "nodemon server/src/server.ts",
+    "client": "cd client && npm run dev"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.3"
+  }
+}
