@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
 
+// Import SVG
+import Quicksand from "../../../assets/icons/quicksand.svg";
+
 type Board = {
   tiles: string[];
   width: number;
@@ -47,7 +50,10 @@ const BoardMinimap: React.FC<BoardMinimapProps> = ({ board }) => {
             >
               {/* You can customize the content/icon based on tile type */}
               {tile === "MONSTER" && "👾"}
-              {tile === "X" && "👤"}
+              {tile.includes("X") && "👤"}
+              {tile === "QUICKSAND_QUAGMIRE" && (
+                <img src={Quicksand} className="h-6 w-6" />
+              )}
             </motion.div>
           ))}
         </div>

@@ -36,7 +36,7 @@ class LobbyManager {
   }
 
   private startGame(socket: CustomSocket): void {
-    const lobby = LobbyStorage.getInstance().getLobbies().get(socket.id);
+    const lobby = LobbyStorage.getInstance().getLobbiesFromSocket(socket);
     if (lobby) {
       lobby.gameId = generateUserId();
 
@@ -52,7 +52,7 @@ class LobbyManager {
   }
 
   private joinLobby(socket: CustomSocket, data: any): void {
-    const lobby = LobbyStorage.getInstance().getLobbies().get(data.lobbyId);
+    const lobby = LobbyStorage.getInstance().getLobbies().get(data.payload.id);
 
     if (lobby) {
       socket.role = "user";
@@ -71,6 +71,7 @@ class LobbyManager {
     const lobby = LobbyStorage.getInstance().createLobby(socket);
 
     socket.join(lobby.id);
+    console.log("User - " + socket.id + " created lobby - " + lobby.id);
     socket.emit("lobby", {
       type: "create",
       payload: lobby,

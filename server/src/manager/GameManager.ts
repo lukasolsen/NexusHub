@@ -14,13 +14,15 @@ class GameManager {
 
   private constructor() {
     this.loadGames();
+
+    this.activeGames = new Map();
   }
 
   public handleGameAction(socket: CustomSocket, data: any): void {
     const lobby = LobbyStorage.getInstance().getLobbiesFromSocket(socket);
 
-    if (lobby.length && this.activeGames.has(lobby[0].gameId)) {
-      const game = this.activeGames.get(lobby[0].gameId);
+    if (lobby && this.activeGames.has(lobby.gameId)) {
+      const game = this.activeGames.get(lobby.gameId);
       if (game) {
         game.receiveEvent(socket, data);
       }
@@ -37,16 +39,21 @@ class GameManager {
   private loadGames(): void {
     const gamesPath = path.join(__dirname, "../games");
 
-    const files = fs.readdirSync(gamesPath);
-    console.log(files.map((file) => file.replace(".ts", "")));
+    const folders = fs.readdirSync(gamesPath);
 
-    files.map((file) => {
-      if (file.endsWith(".ts")) {
-        const gamePath = path.join(gamesPath, file);
-        const GameClass = require(gamePath).default;
+    folders.map((file) => {
+      // Only find folders, go into the folder and read the manifest.json and look for "main" field and load that file
+      if (fs.lstatSync(path.join(gamesPath, file)).isDirectory()) {
+        const manifestPath = path.join(gamesPath, file, "manifest.json");
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+        const GameClass = require(path.join(
+          gamesPath,
+          file,
+          manifest.main
+        )).default;
 
         // Assume each game has a unique identifier, replace it accordingly
-        this.games.set(file.replace(".ts", ""), GameClass);
+        this.games.set(manifest.name, GameClass);
       }
     });
   }
@@ -66,8 +73,8 @@ class GameManager {
   public handleDisconnect(socket: CustomSocket): void {
     const lobby = LobbyStorage.getInstance().getLobbiesFromSocket(socket);
 
-    if (lobby.length && this.activeGames.has(lobby[0].gameId)) {
-      const game = this.activeGames.get(lobby[0].gameId);
+    if (lobby && this.activeGames.has(lobby.gameId)) {
+      const game = this.activeGames.get(lobby.gameId);
       if (game) {
         game.handleDisconnect(socket);
       }

@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { Lobby } from "../../shared/types/lobby";
 import { CustomSocket } from "../../shared/types/essential";
 import turnToUser from "./utils/user";
+import { generateServerId } from "./utils/id";
 
 class LobbyStorage {
   private static instance: LobbyStorage | null = null;
@@ -24,10 +25,10 @@ class LobbyStorage {
     const newUser = turnToUser(socket);
 
     const lobby: Lobby = {
-      id: socket.id,
+      id: generateServerId(),
       owner: newUser,
       users: [newUser],
-      game: "twisted_shadows",
+      game: "TwistedShadows",
       gameId: null,
     };
 
@@ -68,10 +69,10 @@ class LobbyStorage {
     this.lobbies.delete(lobbyId);
   }
 
-  public getLobbiesFromSocket(socket: CustomSocket): Lobby[] {
+  public getLobbiesFromSocket(socket: CustomSocket): Lobby {
     return Array.from(socket.rooms)
       .map((roomId) => this.lobbies.get(roomId))
-      .filter((lobby) => lobby !== undefined);
+      .filter((lobby) => lobby !== undefined)[0];
   }
 
   public getLobbies(): Map<string, Lobby> {
