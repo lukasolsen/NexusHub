@@ -5,5 +5,6 @@ export abstract class Game {
 
   abstract startGame(lobbyId: string, gameId: string): void;
   abstract receiveEvent(socket: CustomSocket, payload: any): void;
+  abstract handleDisconnect(socket: CustomSocket): void;
   // Add more game-related methods as needed
 }

@@ -62,6 +62,17 @@ class GameManager {
       gameInstance.startGame(lobbyId, gameId);
     }
   }
+
+  public handleDisconnect(socket: CustomSocket): void {
+    const lobby = LobbyStorage.getInstance().getLobbiesFromSocket(socket);
+
+    if (lobby.length && this.activeGames.has(lobby[0].gameId)) {
+      const game = this.activeGames.get(lobby[0].gameId);
+      if (game) {
+        game.handleDisconnect(socket);
+      }
+    }
+  }
 }
 
 export default GameManager;

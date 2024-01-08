@@ -5,6 +5,7 @@ import LobbyStorage from "../LobbyStorage";
 import { User } from "../../../shared/types/user";
 import { Socket } from "socket.io";
 import SocketManager from "../SocketManager";
+import { CustomSocket } from "../../../shared/types/essential";
 
 interface Board {
   tiles: string[]; // Array of tiles
@@ -234,13 +235,50 @@ class TwistedShadows extends Game {
 
     // Start the enemy AI loop
     setInterval(() => {
-      if (this.game.currentPlanet) {
+      if (
+        this.game.currentPlanet &&
+        this.game.currentPlanet.board &&
+        this.game.players.find((p) => !p.dead) &&
+        this.game.players.length > 0
+      ) {
         const board = monstersAI(this.game.currentPlanet.board);
         this.game.currentPlanet.board = board;
 
         this.updateGame();
       }
+
+      if (this.game.players.length === 0) {
+        this.game.currentPlanet = null;
+        return this.updateGame();
+      }
     }, 1000);
+  }
+
+  handleDisconnect(socket: CustomSocket): void {
+    // Remove the player from the game
+    this.game.players = this.game.players.filter((p) => p.id !== socket.id);
+
+    // stop the game if there are no players left
+  }
+
+  private forgePlayerStatus(socket: Socket) {
+    const player = this.game.players.find((p) => p.id === socket.id);
+    if (!player) {
+      return;
+    }
+
+    const playerPosition = this.getPlayerPosition();
+    const playerX = playerPosition?.x;
+    const playerY = playerPosition?.y;
+
+    const playerStatus = {
+      name: player.name,
+      dead: player.dead,
+      x: playerX,
+      y: playerY,
+    };
+
+    return playerStatus;
   }
 
   private sendBoard(socket: Socket): void {
@@ -253,6 +291,11 @@ class TwistedShadows extends Game {
       foggedBoard.tiles = foggedBoard.tiles.map((tile) =>
         tile.includes("MONSTER") ? "MONSTER" : tile
       );
+
+      // Check if socket still exists
+      if (!SocketManager.getInstance().getSocketFromId(socket?.id)) {
+        return;
+      }
 
       socket.emit("game", {
         type: "board",
@@ -267,6 +310,11 @@ class TwistedShadows extends Game {
     socket.emit("game", {
       type: "command",
       payload: `You died!`,
+    });
+
+    socket.emit("game", {
+      type: "status",
+      payload: this.forgePlayerStatus(socket),
     });
   }
 

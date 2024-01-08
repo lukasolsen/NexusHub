@@ -58,9 +58,16 @@ const TwistedShadows: React.FC = () => {
           setCurrentText("");
           break;
 
-        case "board": {
-          console.log(data.payload);
+        case "board":
           setBoard(data.payload);
+          break;
+        case "status": {
+          const status = data.payload;
+
+          if (!status?.dead) {
+            await animateText("You died.");
+            setCurrentText("");
+          }
           break;
         }
         default:
