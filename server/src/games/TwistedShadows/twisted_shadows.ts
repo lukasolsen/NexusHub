@@ -237,6 +237,7 @@ class TwistedShadows extends Game {
       type: "command",
       payload: `Moved ${direction}!`,
     });
+    return;
   }
 
   private updateGame(): void {

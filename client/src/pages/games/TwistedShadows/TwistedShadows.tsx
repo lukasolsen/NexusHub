@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Button, IconButton, Input } from "@material-tailwind/react";
+import { IconButton, Input } from "@material-tailwind/react";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
@@ -8,6 +8,7 @@ import {
 } from "../../../service/socketService";
 import { Data } from "../../../../../shared/types/essential";
 import BoardMinimap from "./Board";
+import TerminalSound from "../../../assets/sounds/terminal.mp3";
 
 type Board = {
   tiles: string[];
@@ -16,6 +17,8 @@ type Board = {
 };
 
 const TwistedShadows: React.FC = () => {
+  const [terminalSoundPlaying, setTerminalSoundPlaying] =
+    useState<boolean>(false);
   const [command, setCommand] = useState<string>("");
   const [history, setHistory] = useState<string[]>([]);
   const [currentText, setCurrentText] = useState<string>("");
@@ -116,6 +119,17 @@ const TwistedShadows: React.FC = () => {
             value={command}
             onChange={(e) => setCommand(e.target.value)}
             onKeyDown={(e) => {
+              console.log(terminalSoundPlaying);
+              // Play a sound
+              if (!terminalSoundPlaying && e.key !== "Enter") {
+                const audio = new Audio(TerminalSound);
+                audio.play();
+                setTerminalSoundPlaying(true);
+                audio.addEventListener("ended", () => {
+                  setTerminalSoundPlaying(false);
+                });
+              }
+
               if (e.key === "Enter") {
                 sendMessage("game", { type: "command", payload: command });
                 setCommand("");
