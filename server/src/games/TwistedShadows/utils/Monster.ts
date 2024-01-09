@@ -1,5 +1,5 @@
 import { Board } from "../types/board";
-import { Monster } from "../types/monster";
+import { Monster } from "../types/essential";
 import { getPlayersCoordinates, moveTileTo } from "./board";
 
 export class MonsterManagement {
@@ -9,11 +9,15 @@ export class MonsterManagement {
   constructor() {
     this.monsters = [
       {
-        type: "The Thing",
-        minimalStage: 1,
-        maximalStage: 5,
-        place: "Alaska",
-        mode: "passive", // The Thing is passive initially but has a unique spawning mechanic
+        name: "The Thing",
+        type: "THE_THING",
+
+        maxAmount: 1,
+        minAmount: 1,
+
+        place: "Earth",
+        mode: "passive", // The Thing is passive initially but has a unique spawning mechanic,
+        entityType: "MONSTER",
       },
     ];
   }

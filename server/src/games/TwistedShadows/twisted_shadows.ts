@@ -3,14 +3,14 @@ import LobbyStorage from "../../LobbyStorage";
 import { Socket } from "socket.io";
 import SocketManager from "../../SocketManager";
 import { CustomSocket } from "../../../../shared/types/essential";
-import { Board } from "./types/board";
-import { Monster } from "./types/monster";
+import { Monster } from "./types/essential";
 import { TwistedShadowsType } from "./types/twistedType";
 import { MonsterManagement } from "./utils/Monster";
-import { findTile, generateBoard, getPlayerPosition } from "./utils/board";
+import { generateBoard, getPlayerPosition } from "./utils/board";
 import { forgePlayerStatus } from "./utils/player";
-import { hasPlayerDied } from "./utils/movement";
+import { movePlayer } from "./utils/movement";
 import { TrapManagement } from "./utils/Trap";
+import { ItemManagement } from "./utils/Item";
 
 class TwistedShadows extends Game {
   private game: TwistedShadowsType;
@@ -137,118 +137,6 @@ class TwistedShadows extends Game {
     });
   }
 
-  private createFoggedBoard(playerPosition: { x: number; y: number }): Board {
-    const board = this.game.currentPlanet.board;
-    const foggedBoard: Board = {
-      ...board,
-      tiles: [],
-    };
-
-    for (let y = 0; y < board.height; y++) {
-      for (let x = 0; x < board.width; x++) {
-        const distance = Math.sqrt(
-          Math.pow(x - playerPosition.x, 2) + Math.pow(y - playerPosition.y, 2)
-        );
-
-        if (distance <= 1) {
-          foggedBoard.tiles.push(board.tiles[y * board.width + x]);
-        } else {
-          foggedBoard.tiles.push("?");
-        }
-      }
-    }
-
-    return foggedBoard;
-  }
-
-  private movePlayer(socket: Socket, direction: string) {
-    const player = this.game.players.find((p) => p.id === socket.id);
-
-    const board = this.game.currentPlanet.board;
-    const tiles = board.tiles;
-
-    // Find player's coordinates
-    const playerIndex = tiles.findIndex((t) =>
-      t.includes("X (" + player.name + ")")
-    );
-    const playerX = playerIndex % board.width;
-    const playerY = Math.floor(playerIndex / board.width);
-
-    // Calculate new coordinates
-    let newX = playerX;
-    let newY = playerY;
-
-    switch (direction) {
-      case "forward":
-        newY -= 1;
-        break;
-      case "backward":
-        newY += 1;
-        break;
-      case "left":
-        newX -= 1;
-        break;
-      case "right":
-        newX += 1;
-        break;
-      default:
-        break;
-    }
-
-    // Check if the new coordinates are valid
-    if (newX < 0 || newX >= board.width || newY < 0 || newY >= board.height) {
-      socket.emit("game", {
-        type: "command",
-        payload: `Invalid move: ${direction}`,
-      });
-      return;
-    }
-
-    // Find new player index
-    const newPlayerIndex = newY * board.width + newX;
-
-    // Check if the new tile is a wall
-    if (tiles[newPlayerIndex] === "WALL") {
-      socket.emit("game", {
-        type: "command",
-        payload: `Invalid move: ${direction}`,
-      });
-      return;
-    }
-
-    // Check if the new tile is a player
-    if (tiles[newPlayerIndex].includes("X (")) {
-      socket.emit("game", {
-        type: "command",
-        payload: `Invalid move: ${direction}`,
-      });
-      return;
-    }
-
-    // Check if the player died
-    const hasDied = hasPlayerDied(player, board, newPlayerIndex);
-    if (hasDied) {
-      this.killPlayer(socket);
-      return;
-    }
-
-    TrapManagement.getInstance().doAction(board, newPlayerIndex, player);
-
-    // Update player's position
-    tiles[playerIndex] = "";
-    tiles[newPlayerIndex] = "X (" + player.name + ")";
-
-    this.game.currentPlanet.board = board;
-
-    this.updateGame();
-
-    socket.emit("game", {
-      type: "command",
-      payload: `Moved ${direction}!`,
-    });
-    return;
-  }
-
   private updateGame(): void {
     // get each player
     this.game.players.map((player) => {
@@ -313,7 +201,11 @@ class TwistedShadows extends Game {
             planet.board = generateBoard(
               10,
               10,
-              planet.monsters,
+              [
+                ...MonsterManagement.getInstance().getMonsters(),
+                ...TrapManagement.getInstance().getTraps(),
+                ...ItemManagement.getInstance().getItems(),
+              ],
               this.game.players
             );
 
@@ -370,10 +262,16 @@ class TwistedShadows extends Game {
                 type: "command",
                 payload: "Directions: forward, backward, left, right",
               });
-              return;
+              break;
             }
 
-            this.movePlayer(socket, direction);
+            movePlayer(
+              this.game.currentPlanet.board,
+              socket,
+              this.game.players,
+              this.killPlayer,
+              direction
+            );
             break;
           }
 

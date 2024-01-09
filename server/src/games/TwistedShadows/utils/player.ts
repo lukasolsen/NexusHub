@@ -26,3 +26,7 @@ export const forgePlayerStatus = (
 
   return playerStatus;
 };
+
+export const findPlayer = (players: Player[], socket: Socket) => {
+  return players.find((p) => p.id === socket.id);
+};

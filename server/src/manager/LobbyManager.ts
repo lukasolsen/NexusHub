@@ -59,6 +59,7 @@ class LobbyManager {
       socket.join(lobby.id);
       lobby.users.push(turnToUser(socket));
       const io = SocketManager.getInstance().getIO();
+      lobby.games = GameManager.getInstance(io).getGames();
 
       io.to(lobby.id).emit("lobby", {
         type: "join",
@@ -72,6 +73,10 @@ class LobbyManager {
 
     socket.join(lobby.id);
     console.log("User - " + socket.id + " created lobby - " + lobby.id);
+    const io = SocketManager.getInstance().getIO();
+
+    lobby.games = GameManager.getInstance(io).getGames();
+
     socket.emit("lobby", {
       type: "create",
       payload: lobby,

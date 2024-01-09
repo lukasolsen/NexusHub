@@ -58,6 +58,10 @@ class GameManager {
     });
   }
 
+  public getGames(): string[] {
+    return Array.from(this.games.keys());
+  }
+
   public startGame(lobbyId: string, game: string, gameId: string): void {
     const GameClass = this.games.get(game);
 

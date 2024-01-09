@@ -1,16 +1,11 @@
 import { Board } from "../types/board";
+import { Trap } from "../types/essential";
 import { Player } from "../types/player";
-import { getPlayersCoordinates, moveTileTo } from "./board";
-
-interface Trap {
-  name: string;
-  type: string;
-  minimalStage: number;
-  maximalStage: number;
-  place: string;
-}
 
 export class TrapManagement {
+  static TrapManagement() {
+    throw new Error("Method not implemented.");
+  }
   private static instance: TrapManagement | null = null;
   private traps: Trap[];
 
@@ -18,11 +13,12 @@ export class TrapManagement {
     this.traps = [
       {
         name: "Quicksand Quagmire",
-        type: "Lethal Trap",
-        minimalStage: 1,
-        maximalStage: 5,
-
-        place: "Alaska",
+        minAmount: 1,
+        maxAmount: 3,
+        place: "Earth",
+        rarity: "Common",
+        type: "QUICKSAND_QUAGMIRE",
+        entityType: "TRAP",
       },
     ];
   }

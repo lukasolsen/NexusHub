@@ -9,4 +9,6 @@ export interface Lobby {
 
   game: string;
   gameId: string;
+
+  games?: string[];
 }

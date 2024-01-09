@@ -1,5 +1,5 @@
 import { Board } from "./board";
-import { Monster } from "./monster";
+import { Monster } from "./essential";
 
 export interface Planet {
   name: string;
