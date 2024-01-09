@@ -66,11 +66,11 @@ export const generateBoard = (
       }
 
       const randomValue = Math.random();
-      if (randomValue < 0.02 && monsterCount < 5) {
+      if (randomValue < 0.02 && monsterCount < Math.max(2, monsters.length)) {
         const monster = monsters[Math.floor(Math.random() * monsters.length)];
         tiles[i * width + j] = "MONSTER " + monster.type;
         monsterCount++;
-      } else if (randomValue < 0.04 && trapCount < 3) {
+      } else if (randomValue < 0.04 && trapCount < 1) {
         tiles[i * width + j] = "QUICKSAND_QUAGMIRE";
         trapCount++;
       } else {

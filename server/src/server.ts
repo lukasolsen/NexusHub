@@ -45,7 +45,7 @@ class ServerManager {
       });
     });
 
-    this.listen("10.229.116.133", 3000);
+    this.listen("192.168.98.221", 3000);
   }
 
   private listen(ip: string, port: number) {

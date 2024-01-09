@@ -216,6 +216,15 @@ class TwistedShadows extends Game {
       return;
     }
 
+    // Check if the new tile is a player
+    if (tiles[newPlayerIndex].includes("X (")) {
+      socket.emit("game", {
+        type: "command",
+        payload: `Invalid move: ${direction}`,
+      });
+      return;
+    }
+
     // Check if the player died
     const hasDied = hasPlayerDied(player, board, newPlayerIndex);
     if (hasDied) {

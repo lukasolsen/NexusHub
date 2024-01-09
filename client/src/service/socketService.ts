@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { Data } from "../../../shared/types/essential";
 
-const socket = io("http://10.229.116.133:3000", {
+const socket = io("http://192.168.98.221:3000", {
   transports: ["websocket"],
 });
 
