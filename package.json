@@ -1,6 +1,8 @@
 {
   "scripts": {
     "server": "nodemon server/src/server.ts",
+    "build-client": "cd client && npm run build",
+    "install-client": "cd client && npm install",
     "client": "cd client && npm run dev"
   },
   "dependencies": {
