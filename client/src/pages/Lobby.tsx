@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Badge,
@@ -115,7 +115,9 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
             <Button
               color="indigo"
               placeholder="Start Game"
-              onClick={() => sendMessage("lobby", { type: "start" })}
+              onClick={() =>
+                sendMessage("lobby", { type: "start", game: activeGame })
+              }
             >
               Start Game
             </Button>
@@ -133,11 +135,9 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
                 placeholder={"Game " + index}
                 key={index}
                 className={`w-full h-40 relative shadow-xl hover:shadow-lg transition-shadow duration-300 ${
-                  activeGame === "game" + index
-                    ? "shadow-green-500 "
-                    : "shadow-none"
+                  activeGame === _ ? "shadow-green-500 " : "shadow-none"
                 } hover:shadow-green-200 cursor-pointer`}
-                onClick={() => setActiveGame("game" + index)}
+                onClick={() => setActiveGame(_)}
                 style={{
                   backgroundImage: `url(https://via.assets.so/game.png?id=${index}&q=95&w=360&h=360&fit=fill)`,
                   backgroundSize: "cover",

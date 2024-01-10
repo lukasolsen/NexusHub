@@ -10,6 +10,7 @@ import {
 import { Lobby } from "../../shared/types/lobby";
 import { Data } from "../../shared/types/essential";
 import TwistedShadows from "./pages/games/TwistedShadows/TwistedShadows";
+import MazeRunner from "./pages/games/MazeRunner/MazeRunner";
 
 function App() {
   const [inLobby, setInLobby] = useState<boolean>(false);
@@ -45,7 +46,8 @@ function App() {
     <div className="w-full min-h-screen">
       {!inLobby && <Home />}
       {inLobby && !inGame && <LobbyPage lobby={lobby} />}
-      {inGame && <TwistedShadows />}
+      {inGame && lobby.game === "TwistedShadows" && <TwistedShadows />}
+      {inGame && lobby.game === "MazeRunner" && <MazeRunner />}
     </div>
   );
 }

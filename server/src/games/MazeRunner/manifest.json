@@ -1,0 +1,6 @@
+{
+  "name": "MazeRunner",
+  "version": "1.0.0",
+
+  "main": "maze_runner.ts"
+}

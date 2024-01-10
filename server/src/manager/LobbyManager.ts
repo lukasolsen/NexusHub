@@ -35,10 +35,17 @@ class LobbyManager {
     }
   }
 
-  private startGame(socket: CustomSocket): void {
+  private startGame(socket: CustomSocket, data: { game: string }): void {
     const lobby = LobbyStorage.getInstance().getLobbiesFromSocket(socket);
     if (lobby) {
       lobby.gameId = generateUserId();
+
+      const allowedGames = ["TwistedShadows", "MazeRunner"];
+      if (!allowedGames.includes(data.game)) {
+        return;
+      }
+
+      lobby.game = data.game;
 
       const io = SocketManager.getInstance().getIO();
 
@@ -92,7 +99,7 @@ class LobbyManager {
         this.joinLobby(socket, data);
         break;
       case "start":
-        this.startGame(socket);
+        this.startGame(socket, data);
         break;
       case "disconnect":
         this.leaveLobby(socket);

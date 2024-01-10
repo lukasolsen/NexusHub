@@ -4,6 +4,8 @@
     "client": "cd client && npm run dev"
   },
   "dependencies": {
+    "@react-three/drei": "^9.93.0",
+    "@react-three/postprocessing": "^2.15.11",
     "socket.io": "^4.7.3"
   }
 }
