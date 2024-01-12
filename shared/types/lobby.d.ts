@@ -3,6 +3,7 @@ import { User } from "./user";
 
 export interface Lobby {
   id: string;
+  name: string;
 
   owner: User;
   users: User[];
@@ -11,4 +12,8 @@ export interface Lobby {
   gameId: string;
 
   games?: string[];
+
+  isPublic: boolean;
+
+  bannedUsers: string[];
 }

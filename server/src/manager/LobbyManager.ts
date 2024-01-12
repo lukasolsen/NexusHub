@@ -10,7 +10,7 @@ import LobbyStorage from "../LobbyStorage";
 
 class LobbyManager {
   private leaveLobby(socket: CustomSocket): void {
-    const lobby = LobbyStorage.getInstance().getLobbies().get(socket.id);
+    const lobby = LobbyStorage.getInstance().getLobbiesFromSocketID(socket.id);
 
     if (lobby) {
       socket.leave(lobby.id);
@@ -59,7 +59,7 @@ class LobbyManager {
   }
 
   private joinLobby(socket: CustomSocket, data: any): void {
-    const lobby = LobbyStorage.getInstance().getLobbies().get(data.payload.id);
+    const lobby = LobbyStorage.getInstance().getLobbies().get(data.lobbyId);
 
     if (lobby) {
       socket.role = "user";
@@ -71,6 +71,11 @@ class LobbyManager {
       io.to(lobby.id).emit("lobby", {
         type: "join",
         payload: lobby,
+      });
+    } else {
+      socket.emit("lobby", {
+        type: "error",
+        payload: "No lobby found",
       });
     }
   }
@@ -90,6 +95,85 @@ class LobbyManager {
     });
   }
 
+  public giveOwner(socket: CustomSocket, data: any): void {
+    const lobby = LobbyStorage.getInstance().getLobbiesFromSocketID(socket.id);
+
+    if (lobby) {
+      console.log(data);
+      console.log(
+        "User - " + socket.id + " gave owner to - " + data.payload.userId
+      );
+      const newUser = LobbyStorage.getInstance().findUserFromLobby(
+        lobby.id,
+        data.payload.userId
+      );
+      if (!newUser) {
+        socket.emit("lobby_error", {
+          type: "error",
+          payload: "No user found",
+        });
+        return;
+      }
+
+      lobby.owner = newUser;
+
+      lobby.users = lobby.users.map((user) => {
+        if (user.id === newUser.id) {
+          user.role = "owner";
+        } else {
+          user.role = "user";
+        }
+        return user;
+      });
+
+      const io = SocketManager.getInstance().getIO();
+      io.to(lobby.id).emit("lobby", {
+        type: "giveOwner",
+        payload: lobby,
+      });
+    } else {
+      socket.emit("lobby_error", {
+        type: "error",
+        payload: "No lobby found",
+      });
+    }
+  }
+
+  public banPlayer(socket: CustomSocket, data: any): void {
+    const lobby = LobbyStorage.getInstance().getLobbiesFromSocketID(socket.id);
+
+    if (lobby) {
+      console.log(data);
+      console.log("User - " + socket.id + " banned - " + data.payload.userId);
+      const newUser = LobbyStorage.getInstance().findUserFromLobby(
+        lobby.id,
+        data.payload.userId
+      );
+      if (!newUser) {
+        socket.emit("lobby_error", {
+          type: "error",
+          payload: "No user found",
+        });
+        return;
+      }
+
+      lobby.bannedUsers.push(newUser.id);
+
+      lobby.users = lobby.users.filter((user) => user.id !== newUser.id);
+
+      const io = SocketManager.getInstance().getIO();
+      io.to(lobby.id).emit("lobby", {
+        type: "banPlayer",
+        payload: lobby,
+      });
+    } else {
+      socket.emit("lobby_error", {
+        type: "error",
+        payload: "No lobby found",
+      });
+    }
+  }
+
   public handleLobbyAction(socket: CustomSocket, data: any): void {
     switch (data.type) {
       case "create":
@@ -104,7 +188,78 @@ class LobbyManager {
       case "disconnect":
         this.leaveLobby(socket);
         break;
+      case "getPublicLobbies":
+        const lobbies = LobbyStorage.getInstance().getPublicLobbies();
+        socket.emit("lobby", {
+          type: "getPublicLobbies",
+          payload: lobbies,
+        });
+        break;
+
+      case "giveOwner": {
+        if (socket.role !== "owner") {
+          return;
+        }
+
+        this.giveOwner(socket, data);
+        break;
+      }
+
+      case "kickUser": {
+        if (socket.role !== "owner") {
+          return;
+        }
+
+        this.leaveLobby(socket);
+        break;
+      }
+
+      case "banUser": {
+        if (socket.role !== "owner") {
+          return;
+        }
+
+        this.banPlayer(socket, data);
+        break;
+      }
+
+      case "settings": {
+        if (socket.role !== "owner") {
+          return;
+        }
+
+        const lobby = LobbyStorage.getInstance().getLobbiesFromSocketID(
+          socket.id
+        );
+
+        if (lobby) {
+          const io = SocketManager.getInstance().getIO();
+
+          const requiredFields = ["isPublic"];
+          for (const field of requiredFields) {
+            if (data.payload[field] === undefined) {
+              socket.emit("lobby_error", {
+                type: "error",
+                payload: `Missing field ${field}`,
+              });
+              return;
+            }
+          }
+
+          lobby.isPublic = data.payload.isPublic;
+
+          io.to(lobby.id).emit("lobby", {
+            type: "settings",
+            payload: lobby,
+          });
+        }
+        break;
+      }
     }
+  }
+
+  public handleDisconnect(socket: CustomSocket): void {
+    this.leaveLobby(socket);
   }
 }
 

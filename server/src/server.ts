@@ -42,6 +42,7 @@ class ServerManager {
       });
 
       socket.on("disconnect", () => {
+        this.lobbyManager.handleDisconnect(socket);
         this.gameManager.handleDisconnect(socket);
         console.log("User - " + socket.id + " disconnected");
       });

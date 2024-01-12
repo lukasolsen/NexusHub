@@ -5,6 +5,10 @@ const socket = io("http://192.168.87.22:3000", {
   transports: ["websocket"],
 });
 
+const getSocketId = () => {
+  return socket.id;
+};
+
 const connectDefaultSocket = () => {
   socket.connect();
 };
@@ -38,4 +42,5 @@ export {
   sendMessage,
   subscribeToMessages,
   subscribeToMessage,
+  getSocketId,
 };

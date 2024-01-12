@@ -3,6 +3,7 @@ import { Lobby } from "../../shared/types/lobby";
 import { CustomSocket } from "../../shared/types/essential";
 import turnToUser from "./utils/user";
 import { generateServerId } from "./utils/id";
+import { User } from "../../shared/types/user";
 
 class LobbyStorage {
   private static instance: LobbyStorage | null = null;
@@ -19,6 +20,10 @@ class LobbyStorage {
     return LobbyStorage.instance;
   }
 
+  public getPublicLobbies(): Lobby[] {
+    return Array.from(this.lobbies.values()).filter((lobby) => lobby.isPublic);
+  }
+
   public createLobby(socket: CustomSocket): Lobby {
     socket.role = "owner";
 
@@ -30,6 +35,9 @@ class LobbyStorage {
       users: [newUser],
       game: "TwistedShadows",
       gameId: null,
+      isPublic: false,
+      name: newUser.name + "'s Lobby",
+      bannedUsers: [],
     };
 
     this.lobbies.set(lobby.id, lobby);
@@ -69,9 +77,22 @@ class LobbyStorage {
     this.lobbies.delete(lobbyId);
   }
 
+  public findUserFromLobby(lobbyId: string, userId: string): User | undefined {
+    const lobby = this.lobbies.get(lobbyId);
+    if (lobby) {
+      return lobby.users.find((user) => user.id === userId);
+    }
+  }
+
   public getLobbiesFromSocket(socket: CustomSocket): Lobby {
     return Array.from(socket.rooms)
       .map((roomId) => this.lobbies.get(roomId))
+      .filter((lobby) => lobby !== undefined)[0];
+  }
+
+  public getLobbiesFromSocketID(socketId: string): Lobby {
+    return Array.from(this.lobbies.values())
+      .filter((lobby) => lobby.users.map((user) => user.id).includes(socketId))
       .filter((lobby) => lobby !== undefined)[0];
   }
 

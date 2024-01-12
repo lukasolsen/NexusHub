@@ -5,4 +5,3 @@ export interface User {
   name: string;
   role: "owner" | "mod" | "user"; // "owner", "mod", "user"
 }
-
