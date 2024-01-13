@@ -1,4 +1,3 @@
-import { Server } from "socket.io";
 import { Lobby } from "../../shared/types/lobby";
 import { CustomSocket } from "../../shared/types/essential";
 import turnToUser from "./utils/user";
@@ -20,10 +19,18 @@ class LobbyStorage {
     return LobbyStorage.instance;
   }
 
+  /**
+   * @returns All public lobbies
+   */
   public getPublicLobbies(): Lobby[] {
     return Array.from(this.lobbies.values()).filter((lobby) => lobby.isPublic);
   }
 
+  /**
+   * Handles the creation of a lobby and assigns the owner role to the socket
+   * @param socket
+   * @returns
+   */
   public createLobby(socket: CustomSocket): Lobby {
     socket.role = "owner";
 
@@ -44,6 +51,12 @@ class LobbyStorage {
     return lobby;
   }
 
+  /**
+   * Handles the joining of a lobby and assigns the user role to the socket
+   * @param socket
+   * @param lobbyId
+   * @returns
+   */
   public joinLobby(socket: CustomSocket, lobbyId: string): Lobby | undefined {
     const lobby = this.lobbies.get(lobbyId);
 
@@ -69,14 +82,29 @@ class LobbyStorage {
     return lobby;
   }
 
+  /**
+   * Gets a lobby from its id
+   * @param lobbyId
+   * @returns
+   */
   public getLobbyFromId(lobbyId: string): Lobby | undefined {
     return this.lobbies.get(lobbyId);
   }
 
+  /**
+   * Removes a lobby from the storage
+   * @param lobbyId
+   */
   public removeLobby(lobbyId: string): void {
     this.lobbies.delete(lobbyId);
   }
 
+  /**
+   * Removes a user from a lobby
+   * @param lobbyId
+   * @param userId
+   * @returns
+   */
   public findUserFromLobby(lobbyId: string, userId: string): User | undefined {
     const lobby = this.lobbies.get(lobbyId);
     if (lobby) {
@@ -84,18 +112,32 @@ class LobbyStorage {
     }
   }
 
+  /**
+   * Gets a lobby from a socket
+   * @param socket
+   * @returns
+   */
   public getLobbiesFromSocket(socket: CustomSocket): Lobby {
     return Array.from(socket.rooms)
       .map((roomId) => this.lobbies.get(roomId))
       .filter((lobby) => lobby !== undefined)[0];
   }
 
+  /**
+   * Gets a lobby from a socket id
+   * @param socketId
+   * @returns
+   */
   public getLobbiesFromSocketID(socketId: string): Lobby {
     return Array.from(this.lobbies.values())
       .filter((lobby) => lobby.users.map((user) => user.id).includes(socketId))
       .filter((lobby) => lobby !== undefined)[0];
   }
 
+  /**
+   * Gets all lobbies
+   * @returns
+   */
   public getLobbies(): Map<string, Lobby> {
     return this.lobbies;
   }

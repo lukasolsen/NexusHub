@@ -1,5 +1,3 @@
-import { CustomSocket } from "./essential";
-
 export interface GameType {
   id: string;
   name: string; // The name of the game (e.g. "Chess")

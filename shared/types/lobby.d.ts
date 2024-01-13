@@ -1,4 +1,3 @@
-import { GameType } from "./game";
 import { User } from "./user";
 
 export interface Lobby {

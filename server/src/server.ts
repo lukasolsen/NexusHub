@@ -24,7 +24,7 @@ class ServerManager {
     SocketManager.getInstance().initialize(io);
 
     this.lobbyManager = new LobbyManager();
-    this.gameManager = GameManager.getInstance(io);
+    this.gameManager = GameManager.getInstance();
 
     io.on("connection", (socket: CustomSocket) => {
       socket.userId = generateUserId();

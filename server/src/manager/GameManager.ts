@@ -29,7 +29,7 @@ class GameManager {
     }
   }
 
-  public static getInstance(io: Server): GameManager {
+  public static getInstance(): GameManager {
     if (!GameManager.instance) {
       GameManager.instance = new GameManager();
     }

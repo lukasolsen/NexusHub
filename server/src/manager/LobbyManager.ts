@@ -1,12 +1,9 @@
-// server/LobbyManager.ts
-import { Server } from "socket.io";
-import { Lobby } from "../../../shared/types/lobby";
-import { generateServerId, generateUserId } from "../utils/id";
-import { CustomSocket } from "../../../shared/types/essential";
+import { generateUserId } from "../utils/id";
 import turnToUser from "../utils/user";
 import GameManager from "./GameManager";
 import SocketManager from "../SocketManager";
 import LobbyStorage from "../LobbyStorage";
+import { CustomSocket } from "../../../shared/types/essential";
 
 class LobbyManager {
   private leaveLobby(socket: CustomSocket): void {
@@ -40,7 +37,7 @@ class LobbyManager {
     if (lobby) {
       lobby.gameId = generateUserId();
 
-      const allowedGames = ["TwistedShadows", "MazeRunner"];
+      const allowedGames = GameManager.getInstance().getGames();
       if (!allowedGames.includes(data.game)) {
         return;
       }
@@ -54,7 +51,7 @@ class LobbyManager {
         payload: lobby,
       });
 
-      GameManager.getInstance(io).startGame(lobby.id, lobby.game, lobby.gameId);
+      GameManager.getInstance().startGame(lobby.id, lobby.game, lobby.gameId);
     }
   }
 
@@ -66,7 +63,7 @@ class LobbyManager {
       socket.join(lobby.id);
       lobby.users.push(turnToUser(socket));
       const io = SocketManager.getInstance().getIO();
-      lobby.games = GameManager.getInstance(io).getGames();
+      lobby.games = GameManager.getInstance().getGames();
 
       io.to(lobby.id).emit("lobby", {
         type: "join",
@@ -87,7 +84,7 @@ class LobbyManager {
     console.log("User - " + socket.id + " created lobby - " + lobby.id);
     const io = SocketManager.getInstance().getIO();
 
-    lobby.games = GameManager.getInstance(io).getGames();
+    lobby.games = GameManager.getInstance().getGames();
 
     socket.emit("lobby", {
       type: "create",
@@ -127,6 +124,11 @@ class LobbyManager {
       });
 
       const io = SocketManager.getInstance().getIO();
+
+      const newUserSocket = io.sockets.sockets.get(newUser.id) as CustomSocket;
+      newUserSocket.role = "owner";
+      socket.role = "user";
+
       io.to(lobby.id).emit("lobby", {
         type: "giveOwner",
         payload: lobby,
@@ -166,6 +168,10 @@ class LobbyManager {
         type: "banPlayer",
         payload: lobby,
       });
+
+      const newUserSocket = io.sockets.sockets.get(newUser.id);
+
+      this.leaveLobby(newUserSocket as CustomSocket);
     } else {
       socket.emit("lobby_error", {
         type: "error",
@@ -210,12 +216,47 @@ class LobbyManager {
           return;
         }
 
-        this.leaveLobby(socket);
+        const lobby = LobbyStorage.getInstance().getLobbiesFromSocketID(
+          socket.id
+        );
+
+        if (!lobby) {
+          socket.emit("lobby_error", {
+            type: "error",
+            payload: "No lobby found",
+          });
+
+          return;
+        }
+
+        const user = lobby.users.find(
+          (user) => user.id === data.payload.userId
+        );
+        if (!user) {
+          socket.emit("lobby_error", {
+            type: "error",
+            payload: "No user found",
+          });
+
+          return;
+        }
+
+        const io = SocketManager.getInstance().getIO();
+
+        io.to(user.id).emit("lobby", {
+          type: "kickUser",
+          payload: lobby,
+        });
+
+        const newUserSocket = io.sockets.sockets.get(user.id);
+
+        this.leaveLobby(newUserSocket as CustomSocket);
         break;
       }
 
       case "banUser": {
         if (socket.role !== "owner") {
+          console.log("Not owner");
           return;
         }
 

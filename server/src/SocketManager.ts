@@ -28,6 +28,10 @@ class SocketManager {
   public getIO(): Server | null {
     return this.io;
   }
+
+  getSocket(id: string): any {
+    return this.io?.sockets.sockets.get(id);
+  }
 }
 
 export default SocketManager;
