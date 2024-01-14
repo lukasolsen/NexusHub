@@ -14,6 +14,7 @@ import MazeRunner from "./pages/games/MazeRunner/MazeRunner";
 import { Alert } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import ExampleGame from "./pages/games/ExampleGame/ExampleGame";
+import HarmonyHaven from "./pages/games/HarmonyHaven/HarmonyHaven";
 
 function App() {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -63,6 +64,7 @@ function App() {
         {inGame && lobby.game === "TwistedShadows" && <TwistedShadows />}
         {inGame && lobby.game === "MazeRunner" && <MazeRunner />}
         {inGame && lobby.game === "ExampleGame" && <ExampleGame />}
+        {inGame && lobby.game === "HarmonyHaven" && <HarmonyHaven />}
       </div>
 
       {openAlert && (
