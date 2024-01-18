@@ -15,6 +15,7 @@ import { Alert } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import ExampleGame from "./pages/games/ExampleGame/ExampleGame";
 import HarmonyHaven from "./pages/games/HarmonyHaven/HarmonyHaven";
+import CosmicHorrors from "./pages/games/CosmicHorrors/CosmicHorrors";
 
 function App() {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -65,6 +66,7 @@ function App() {
         {inGame && lobby.game === "MazeRunner" && <MazeRunner />}
         {inGame && lobby.game === "ExampleGame" && <ExampleGame />}
         {inGame && lobby.game === "HarmonyHaven" && <HarmonyHaven />}
+        {inGame && lobby.game === "CosmicHorrors" && <CosmicHorrors />}
       </div>
 
       {openAlert && (

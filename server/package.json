@@ -9,6 +9,7 @@
     "socket.io": "^4.7.3"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21"
+    "@types/express": "^4.17.21",
+    "rot-js": "^2.2.0"
   }
 }
