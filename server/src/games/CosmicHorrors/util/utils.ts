@@ -1,3 +1,6 @@
+import { User } from "../../../../../shared/types/user";
+import Tile from "../components/board/Tile";
+
 function tryTo(description: string, callback: () => boolean | void) {
   for (let timeout = 1000; timeout > 0; timeout--) {
     if (callback()) {
@@ -22,4 +25,8 @@ function shuffle(arr: any[]) {
   return arr;
 }
 
-export { tryTo, randomRange, shuffle };
+const PlayerToTile = (player: User): Tile => {
+  return new Tile(0, 0, 0, true, "Player (" + player.id + ")");
+};
+
+export { tryTo, randomRange, shuffle, PlayerToTile };

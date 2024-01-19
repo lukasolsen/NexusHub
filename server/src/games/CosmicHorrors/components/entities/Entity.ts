@@ -1,11 +1,13 @@
-import Tile from "./Tile";
+import Tile from "../board/Tile";
 
 class Entity {
   public tile: Tile;
-  public sprite: string;
+  public sprite: number;
   public hp: number;
 
-  constructor(tile: Tile, sprite: string, hp: number) {
+  public isPlayer: boolean = false;
+
+  constructor(tile: Tile, sprite: number, hp: number) {
     this.move(tile);
     this.sprite = sprite;
     this.hp = hp;
@@ -14,7 +16,7 @@ class Entity {
   tryMove(dx, dy) {
     let newTile = this.tile.getNeighbor(dx, dy);
     if (newTile.passable) {
-      if (!newTile.monster) {
+      if (!newTile.entity) {
         this.move(newTile);
       }
       return true;
@@ -23,10 +25,10 @@ class Entity {
 
   move(tile: Tile) {
     if (this.tile) {
-      this.tile.monster = null;
+      this.tile.entity = null;
     }
     this.tile = tile;
-    tile.monster = this;
+    tile.entity = this;
   }
 }
 

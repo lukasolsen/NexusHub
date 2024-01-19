@@ -3,7 +3,6 @@ import { User } from "../../../../shared/types/user";
 import { Game } from "../../../../shared/utils/game";
 import LobbyStorage from "../../LobbyStorage";
 import BoardGeneration from "./components/board";
-import { Item, Monster, Player } from "./types/essential";
 import { PlayerSocket } from "./types/user";
 
 class CosmicHorrors extends Game {
@@ -50,7 +49,8 @@ class CosmicHorrors extends Game {
     this.users = lobby.users.map((user) => this.userToPlayer(user));
 
     // Generate the board
-    const board = BoardGeneration.getInstance().generateLevel();
+    BoardGeneration.getInstance().generateLevel();
+    BoardGeneration.getInstance().populateBoard();
     this.sendToLobby("game", {
       type: "board",
       payload: { board: BoardGeneration.getInstance().generateBoardForLobby() },

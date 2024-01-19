@@ -1,4 +1,5 @@
-import { randomRange, tryTo } from "../util/utils";
+import { User } from "../../../../../shared/types/user";
+import { PlayerToTile, randomRange } from "../util/utils";
 import Floor from "./board/Floor";
 import Tile from "./board/Tile";
 import Wall from "./board/Wall";
@@ -15,6 +16,7 @@ class BoardGeneration {
   private tiles: any;
   private numTiles: number;
   private passableTiles: any[] = [];
+  private entities: any[] = [];
 
   private startingTile: any;
   private x: number;
@@ -40,6 +42,10 @@ class BoardGeneration {
 
   generateLevel() {
     return this.tiles;
+  }
+
+  populateBoard() {
+    this.addPlayers(this.entities);
   }
 
   generateTiles() {
@@ -78,6 +84,16 @@ class BoardGeneration {
 
   private randomPassableTile() {
     return this.passableTiles[randomRange(0, this.passableTiles.length - 1)];
+  }
+
+  private addPlayers(players: User[]) {
+    players.forEach((player) => {
+      let tile = this.randomPassableTile();
+      tile.entity = PlayerToTile(player);
+      this.entities.push(tile.entity);
+
+      this.tiles[tile.x][tile.y] = tile;
+    });
   }
 }
 

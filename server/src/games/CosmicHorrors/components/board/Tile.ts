@@ -1,6 +1,6 @@
 import { shuffle } from "../../util/utils";
 import BoardGeneration from "../board";
-import Entity from "./Entity";
+import Entity from "../entities/Entity";
 
 class Tile {
   public x: number;
@@ -8,7 +8,7 @@ class Tile {
   public sprite: number;
   public passable: boolean;
   public name: string;
-  public monster: Entity | null = null;
+  public entity: Entity | null = null;
 
   constructor(
     x: number,
