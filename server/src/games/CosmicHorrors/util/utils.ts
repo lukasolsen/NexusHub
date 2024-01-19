@@ -11,4 +11,15 @@ function randomRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export { tryTo, randomRange };
+function shuffle(arr: any[]) {
+  let temp: any[], r: number;
+  for (let i = 1; i < arr.length; i++) {
+    r = randomRange(0, i);
+    temp = arr[i];
+    arr[i] = arr[r];
+    arr[r] = temp;
+  }
+  return arr;
+}
+
+export { tryTo, randomRange, shuffle };

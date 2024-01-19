@@ -49,11 +49,12 @@ class CosmicHorrors extends Game {
     const lobby = LobbyStorage.getInstance().getLobbyFromId(lobbyId);
     this.users = lobby.users.map((user) => this.userToPlayer(user));
 
-    this.boardGeneration = new BoardGeneration();
-
     // Generate the board
-    const board = this.boardGeneration.generateLevel();
-    this.sendToLobby("game", { type: "board", payload: { board: board } });
+    const board = BoardGeneration.getInstance().generateLevel();
+    this.sendToLobby("game", {
+      type: "board",
+      payload: { board: BoardGeneration.getInstance().generateBoardForLobby() },
+    });
   }
 
   private userToPlayer(user: User): PlayerSocket {

@@ -1,9 +1,14 @@
+import { shuffle } from "../../util/utils";
+import BoardGeneration from "../board";
+import Entity from "./Entity";
+
 class Tile {
   public x: number;
   public y: number;
   public sprite: number;
   public passable: boolean;
   public name: string;
+  public monster: Entity | null = null;
 
   constructor(
     x: number,
@@ -27,6 +32,37 @@ class Tile {
       passable: this.passable,
       name: this.name,
     };
+  }
+
+  getNeighbor(dx: number, dy: number) {
+    return BoardGeneration.getInstance().getTile(this.x + dx, this.y + dy);
+  }
+
+  getAdjacentNeighbors() {
+    return shuffle([
+      this.getNeighbor(0, -1),
+      this.getNeighbor(0, 1),
+      this.getNeighbor(-1, 0),
+      this.getNeighbor(1, 0),
+    ]);
+  }
+
+  getAdjacentPassableNeighbors() {
+    return this.getAdjacentNeighbors().filter((t) => t.passable);
+  }
+
+  getConnectedTiles() {
+    let connectedTiles = [this];
+    let frontier = [this];
+    while (frontier.length) {
+      let neighbors = frontier
+        .pop()
+        .getAdjacentPassableNeighbors()
+        .filter((t) => !connectedTiles.includes(t));
+      connectedTiles = connectedTiles.concat(neighbors);
+      frontier = frontier.concat(neighbors);
+    }
+    return connectedTiles;
   }
 }
 

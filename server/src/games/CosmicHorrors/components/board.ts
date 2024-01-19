@@ -4,8 +4,18 @@ import Tile from "./board/Tile";
 import Wall from "./board/Wall";
 
 class BoardGeneration {
+  private static instance: BoardGeneration;
+  static getInstance() {
+    if (!BoardGeneration.instance) {
+      BoardGeneration.instance = new BoardGeneration();
+    }
+
+    return BoardGeneration.instance;
+  }
   private tiles: any;
   private numTiles: number;
+  private passableTiles: any[] = [];
+
   private startingTile: any;
   private x: number;
   private y: number;
@@ -20,6 +30,14 @@ class BoardGeneration {
     console.log("tiles", this.tiles);
   }
 
+  generateBoardForLobby() {
+    return this.tiles.map((row: any) => {
+      return row.map((tile: Tile) => {
+        return tile.draw().name;
+      });
+    });
+  }
+
   generateLevel() {
     return this.tiles;
   }
@@ -31,9 +49,10 @@ class BoardGeneration {
       tiles[i] = [];
       for (let j = 0; j < this.numTiles; j++) {
         if (Math.random() < 0.3 || !this.inBounds(i, j)) {
-          tiles[i][j] = new Wall(i, j).draw().name;
+          tiles[i][j] = new Wall(i, j);
         } else {
-          tiles[i][j] = new Floor(i, j).draw().name;
+          tiles[i][j] = new Floor(i, j);
+          this.passableTiles.push(tiles[i][j]);
         }
       }
     }
@@ -58,15 +77,7 @@ class BoardGeneration {
   }
 
   private randomPassableTile() {
-    let tile: Tile;
-
-    let x = randomRange(0, this.numTiles - 1);
-    let y = randomRange(0, this.numTiles - 1);
-    tile = this.getTile(x, y);
-
-    if (tile.passable) {
-      return tile;
-    }
+    return this.passableTiles[randomRange(0, this.passableTiles.length - 1)];
   }
 }
 
