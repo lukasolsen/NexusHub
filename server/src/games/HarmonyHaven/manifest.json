@@ -1,7 +1,0 @@
-{
-  "name": "HarmonyHaven",
-  "version": "1.0.0",
-  "description": "Example game for the Game Framework",
-
-  "main": "harmony_game.ts"
-}

@@ -23,12 +23,12 @@ const CosmicHorrors: React.FC = () => {
   }, [controls]);
 
   const drawTile = (tile: string) => {
-    switch (tile) {
-      case "Wall":
+    switch (true) {
+      case tile.includes("Wall"):
         return <Square2StackIcon className="text-4xl text-red-600 w-8" />;
-      case "Cloud":
+      case tile.includes("Cloud"):
         return <CloudIcon className="text-4xl text-blue-500 w-8" />;
-      case "Player":
+      case tile.includes("Player"):
         return <div className="w-8">Player</div>;
       default:
         return <div className="w-8"></div>;

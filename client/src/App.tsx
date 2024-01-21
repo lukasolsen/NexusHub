@@ -10,11 +10,8 @@ import {
 import { Lobby } from "../../shared/types/lobby";
 import { Data } from "../../shared/types/essential";
 import TwistedShadows from "./pages/games/TwistedShadows/TwistedShadows";
-import MazeRunner from "./pages/games/MazeRunner/MazeRunner";
 import { Alert } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import ExampleGame from "./pages/games/ExampleGame/ExampleGame";
-import HarmonyHaven from "./pages/games/HarmonyHaven/HarmonyHaven";
 import CosmicHorrors from "./pages/games/CosmicHorrors/CosmicHorrors";
 
 function App() {
@@ -63,9 +60,6 @@ function App() {
         {!inLobby && <Home />}
         {inLobby && !inGame && <LobbyPage lobby={lobby} />}
         {inGame && lobby.game === "TwistedShadows" && <TwistedShadows />}
-        {inGame && lobby.game === "MazeRunner" && <MazeRunner />}
-        {inGame && lobby.game === "ExampleGame" && <ExampleGame />}
-        {inGame && lobby.game === "HarmonyHaven" && <HarmonyHaven />}
         {inGame && lobby.game === "CosmicHorrors" && <CosmicHorrors />}
       </div>
 

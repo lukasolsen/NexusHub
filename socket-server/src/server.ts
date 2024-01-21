@@ -1,10 +1,11 @@
-import { createServer } from "http";
+import { createServer } from "https";
 import { Server } from "socket.io";
 import { generateUserId } from "./utils/id";
-import { CustomSocket, Data } from "../../shared/types/essential";
 import LobbyManager from "./manager/LobbyManager";
 import GameManager from "./manager/GameManager";
 import SocketManager from "./SocketManager";
+import { CustomSocket, Data } from "../../shared/types/essential";
+import { readFileSync } from "fs";
 
 class ServerManager {
   private httpServer: any;
@@ -12,7 +13,10 @@ class ServerManager {
   private gameManager: GameManager;
 
   constructor() {
-    this.httpServer = createServer();
+    this.httpServer = createServer({
+      key: readFileSync("shared/ssl/server.key"),
+      cert: readFileSync("shared/ssl/server.cert"),
+    });
     // Allow CORS
     this.httpServer.on("request", (req: any, res: any) => {
       res.setHeader("Access-Control-Allow-Origin", "*");

@@ -1,11 +1,14 @@
 {
   "scripts": {
-    "server": "nodemon server/src/server.ts",
-    "client": "cd client && npm run dev"
+    "socket-server": "nodemon socket-server/src/server.ts",
+    "client": "npm --prefix client run dev",
+    "install": "npm --prefix client install && npm install && npm --prefix socket-server install"
   },
   "dependencies": {
-    "@react-three/drei": "^9.93.0",
-    "@react-three/postprocessing": "^2.15.11",
-    "socket.io": "^4.7.3"
+    "nodemon": "latest",
+    "socket.io": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5"
   }
 }

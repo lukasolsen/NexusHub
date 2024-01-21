@@ -1,8 +1,9 @@
 import { User } from "../../../../../shared/types/user";
-import { PlayerToTile, randomRange } from "../util/utils";
+import { randomRange } from "../util/utils";
 import Floor from "./board/Floor";
 import Tile from "./board/Tile";
 import Wall from "./board/Wall";
+import Player from "./entities/Player";
 
 class BoardGeneration {
   private static instance: BoardGeneration;
@@ -28,8 +29,6 @@ class BoardGeneration {
     //this.startingTile = this.randomPassableTile();
     //this.x = this.startingTile.x;
     //this.y = this.startingTile.y;
-
-    console.log("tiles", this.tiles);
   }
 
   generateBoardForLobby() {
@@ -44,8 +43,10 @@ class BoardGeneration {
     return this.tiles;
   }
 
-  populateBoard() {
-    this.addPlayers(this.entities);
+  populateBoard(players: User[]) {
+    this.addPlayers(players);
+
+    console.log("Entities:", this.entities);
   }
 
   generateTiles() {
@@ -89,10 +90,10 @@ class BoardGeneration {
   private addPlayers(players: User[]) {
     players.forEach((player) => {
       let tile = this.randomPassableTile();
-      tile.entity = PlayerToTile(player);
-      this.entities.push(tile.entity);
+      let entity = new Player(tile);
 
-      this.tiles[tile.x][tile.y] = tile;
+      this.tiles[tile.x][tile.y] = entity;
+      this.entities.push(entity);
     });
   }
 }

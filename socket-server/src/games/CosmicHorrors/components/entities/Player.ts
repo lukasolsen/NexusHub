@@ -8,7 +8,7 @@ class Player extends Entity {
 
   draw() {
     return {
-      name: "player",
+      name: "Player",
       sprite: this.sprite,
       x: this.tile.x,
       y: this.tile.y,

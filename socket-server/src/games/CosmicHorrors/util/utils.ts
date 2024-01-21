@@ -25,8 +25,4 @@ function shuffle(arr: any[]) {
   return arr;
 }
 
-const PlayerToTile = (player: User): Tile => {
-  return new Tile(0, 0, 0, true, "Player (" + player.id + ")");
-};
-
-export { tryTo, randomRange, shuffle, PlayerToTile };
+export { tryTo, randomRange, shuffle };
