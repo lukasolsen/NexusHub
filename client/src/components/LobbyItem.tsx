@@ -1,5 +1,5 @@
-import { Card, Typography } from "@material-tailwind/react";
 import { Lobby } from "../../../shared/types/lobby";
+import { Button } from "./ui/button";
 
 type LobbyItemProps = {
   lobby: Lobby;
@@ -8,24 +8,23 @@ type LobbyItemProps = {
 
 const LobbyItemComponent: React.FC<LobbyItemProps> = ({ lobby, onClick }) => {
   return (
-    <Card
-      placeholder={"Card"}
+    <Button
       key={lobby.id}
       className="flex flex-row items-center justify-between gap-6 w-full rounded-sm p-4 cursor-pointer hover:bg-blue-gray-50"
       onClick={onClick}
     >
       <div className="flex flex-col">
-        <Typography color="gray" placeholder="Code" variant="h4">
+        <h4 color="gray">
           {lobby.name}
-        </Typography>
-        <Typography color="gray" placeholder="Code" variant="h4">
+        </h4>
+        <h4 color="gray">
           {lobby.users.length} / 10
-        </Typography>
+        </h4>
       </div>
-      <Typography color="gray" placeholder="Code" variant="h4">
+      <h4 color="gray">
         {lobby.isPublic ? "Public" : "Private"}
-      </Typography>
-    </Card>
+      </h4>
+    </Button>
   );
 };
 

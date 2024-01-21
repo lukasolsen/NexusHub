@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  Accordion,
-  AccordionBody,
-  AccordionHeader,
-  Button,
-  Collapse,
-  Input,
-  List,
-  Typography,
-} from "@material-tailwind/react";
 import { sendMessage, subscribeToMessage } from "../service/socketService";
 import LobbyItemComponent from "../components/LobbyItem";
 import { Lobby } from "../../../shared/types/lobby";
+import { Button } from "../components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+} from "../components/ui/accordion";
+import { Input } from "../components/ui/input";
 
 const Home: React.FC = () => {
-  const [displayTitle, setDisplayTitle] = useState<boolean>(false);
-
-  const [openAccordion, setOpenAccordion] = useState<number>(0);
-
   const [selectedInformation, setSelectedInformation] = useState<string>("");
   const [lobbyCode, setLobbyCode] = useState<string>("");
 
   const [publicLobbies, setPublicLobbies] = useState<Lobby[]>([]);
   useEffect(() => {
+    sendMessage("lobby", { type: "getPublicLobbies" });
+
     subscribeToMessage("lobby", (data) => {
       switch (data.type) {
         case "getPublicLobbies":
@@ -32,90 +27,53 @@ const Home: React.FC = () => {
           break;
       }
     });
-  });
-
-  useEffect(() => {
-    sendMessage("lobby", { type: "getPublicLobbies" });
-  }, [openAccordion]);
+  }, []);
 
   return (
     <div className="container mx-auto w-full gap-12">
-      {/* Main Content */}
-      <Button
-        onClick={() => setDisplayTitle(!displayTitle)}
-        variant="text"
-        placeholder={"Button for title"}
-        className="w-full text-center"
-      >
-        <Typography placeholder={"Title"} variant="h3">
-          Welcome to NexusHub
-        </Typography>
-      </Button>
-      <Collapse open={displayTitle} className="text-center">
-        <Typography placeholder={"Description"}>
-          NexusHub is a platform for playing multiplayer games with your
-          friends.
-        </Typography>
-      </Collapse>
+      <h1>Welcome to NexusHub</h1>
+      <p>
+        NexusHub is a platform for playing multiplayer games with your friends.
+      </p>
 
       {!selectedInformation && (
         <div className="flex flex-row">
           <div className="flex flex-col gap-4 w-3/12">
-            <Button
-              onClick={() => setSelectedInformation("join")}
-              variant="text"
-              placeholder={"Button"}
-            >
+            <Button onClick={() => setSelectedInformation("join")}>
               Join Lobby
             </Button>
             <Button
               onClick={() => {
                 sendMessage("lobby", { type: "create" });
               }}
-              variant="text"
-              placeholder={"Button"}
             >
               Create Lobby
             </Button>
           </div>
           <div>
-            <Accordion
-              open={openAccordion === 1}
-              placeholder={"Public Lobbies"}
-            >
-              <AccordionHeader
-                onClick={() => setOpenAccordion(openAccordion === 1 ? 0 : 1)}
-                placeholder={"Open Public Lobbies"}
-              >
-                Public Lobbies
-              </AccordionHeader>
-              <AccordionBody>
-                <List placeholder={"Public Lobbies"}>
-                  {publicLobbies &&
-                    publicLobbies.map((lobby) => (
-                      <LobbyItemComponent
-                        key={lobby.id}
-                        lobby={lobby}
-                        onClick={() => {
-                          sendMessage("lobby", {
-                            type: "join",
-                            lobbyId: lobby.id,
-                          });
-                        }}
-                      />
-                    ))}
+            <h3>Public Lobbies</h3>
+            <Accordion collapsible type="single">
+              <AccordionItem value="public-lobbies"></AccordionItem>
 
-                  {publicLobbies.length === 0 && (
-                    <Typography
-                      placeholder={"No Public Lobbies"}
-                      variant="paragraph"
-                      className="text-center"
-                    >
-                      No public lobbies available
-                    </Typography>
-                  )}
-                </List>
-              </AccordionBody>
+              {publicLobbies &&
+                publicLobbies.map((lobby) => (
+                  <AccordionContent>
+                    <LobbyItemComponent
+                      key={lobby.id}
+                      lobby={lobby}
+                      onClick={() => {
+                        sendMessage("lobby", {
+                          type: "join",
+                          lobbyId: lobby.id,
+                        });
+                      }}
+                    />
+                  </AccordionContent>
+                ))}
+
+              {publicLobbies.length === 0 && (
+                <h3 className="text-center">No public lobbies available</h3>
+              )}
             </Accordion>
           </div>
         </div>
@@ -124,18 +82,23 @@ const Home: React.FC = () => {
       {selectedInformation === "join" && (
         <div className="flex flex-col gap-2 w-6/12 mx-auto items-center h-full">
           <Input
-            crossOrigin={"anonymous"}
-            type="text"
             value={lobbyCode}
             onChange={(e) => setLobbyCode(e.target.value)}
-            label="Lobby Code"
+            placeholder="Lobby Code"
+            type="text"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMessage("lobby", {
+                  type: "join",
+                  lobbyId: lobbyCode,
+                });
+              }
+            }}
           />
           <Button
             onClick={() => {
               sendMessage("lobby", { type: "join", lobbyId: lobbyCode });
             }}
-            variant="text"
-            placeholder={"Button"}
           >
             Join
           </Button>
@@ -144,13 +107,7 @@ const Home: React.FC = () => {
 
       {/* Version of the thing */}
       <div className="absolute bottom-0 left-0 p-2">
-        <Typography
-          placeholder={"Version"}
-          variant="h6"
-          className="text-teal-500"
-        >
-          v40
-        </Typography>
+        <h6 className="text-teal-500">v40</h6>
       </div>
     </div>
   );

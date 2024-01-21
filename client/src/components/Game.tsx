@@ -1,4 +1,4 @@
-import { Card, Typography } from "@material-tailwind/react";
+import { Card } from "./ui/card";
 
 type GameComponentProps = {
   index: number;
@@ -15,7 +15,6 @@ const GameComponent: React.FC<GameComponentProps> = ({
 }) => {
   return (
     <Card
-      placeholder={"Game " + index}
       key={index}
       className={`w-full h-40 relative rounded-sm border-4 hover:border-indigo-300 transition-all duration-300 border-gray-700 cursor-pointer ${
         activeGame === _ && "border-indigo-500"
@@ -28,14 +27,9 @@ const GameComponent: React.FC<GameComponentProps> = ({
       }}
     >
       <div className="absolute bottom-0 right-0 left-0 w-full text-center bg-opacity-50 bg-gray-900 p-2">
-        <Typography
-          color="white"
-          placeholder={"Title"}
-          variant="h6"
-          className="font-normal"
-        >
+        <h6 color="white" className="font-normal">
           {_}
-        </Typography>
+        </h6>
       </div>
     </Card>
   );

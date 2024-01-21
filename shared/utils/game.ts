@@ -1,5 +1,5 @@
-import SocketManager from "../../server/src/SocketManager";
-import turnToUser from "../../server/src/utils/user";
+import SocketManager from "../../socket-server/src/SocketManager";
+import turnToUser from "../../socket-server/src/utils/user";
 import { CustomSocket } from "../types/essential";
 import { User } from "../types/user";
 

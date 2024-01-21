@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import {
-  Switch,
-  Typography,
-  Button,
-  ButtonGroup,
-} from "@material-tailwind/react";
 import { Lobby } from "../../../shared/types/lobby";
 import { getSocketId, sendMessage } from "../service/socketService";
 import UserComponent from "../components/User";
 import GameComponent from "../components/Game";
+import { Button } from "../components/ui/button";
+import { Switch } from "../components/ui/switch";
 
 type LobbyPageProps = {
   lobby: Lobby;
@@ -52,9 +48,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
 
       <div className="flex flex-row items-center justify-between gap-6 w-full">
         <div className="flex flex-col">
-          <Typography color="gray" placeholder="Code" variant="h4">
-            {lobby.id}
-          </Typography>
+          <h4 color="gray">{lobby.id}</h4>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
@@ -64,11 +58,10 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
 
       <div className="mt-8 flex flex-row items-center justify-between">
         <div className="flex items-center gap-6">
-          <Typography color="gray" placeholder="Lobby Status" className="mr-4">
+          <p color="gray" className="mr-4">
             Lobby Status:
-          </Typography>
+          </p>
           <Switch
-            crossOrigin={"anonymous"}
             onChange={() => {
               sendMessage("lobby", {
                 type: "settings",
@@ -78,29 +71,25 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
             checked={lobby?.isPublic ? true : false || false}
             color="indigo"
           />
-          <Typography color="gray" placeholder="Lobby Status">
-            {lobby?.isPublic ? "Public" : "Private"}
-          </Typography>
+          <p color="gray">{lobby?.isPublic ? "Public" : "Private"}</p>
         </div>
         <div>
-          <ButtonGroup placeholder={"ButtonGroup"}>
+          <div className="flex flex-row">
             <Button
               color="indigo"
-              placeholder="Disconnect"
               onClick={() => sendMessage("lobby", { type: "disconnect" })}
             >
               Disconnect
             </Button>
             <Button
               color="indigo"
-              placeholder="Start Game"
               onClick={() =>
                 sendMessage("lobby", { type: "start", game: activeGame })
               }
             >
               Start Game
             </Button>
-          </ButtonGroup>
+          </div>
         </div>
       </div>
 

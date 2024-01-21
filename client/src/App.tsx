@@ -10,13 +10,11 @@ import {
 import { Lobby } from "../../shared/types/lobby";
 import { Data } from "../../shared/types/essential";
 import TwistedShadows from "./pages/games/TwistedShadows/TwistedShadows";
-import { Alert } from "@material-tailwind/react";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import CosmicHorrors from "./pages/games/CosmicHorrors/CosmicHorrors";
+import { toast } from "sonner";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
-  const [openAlert, setOpenAlert] = useState<boolean>(false);
-
   const [inLobby, setInLobby] = useState<boolean>(false);
   const [inGame, setInGame] = useState<boolean>(false);
   const [lobby, setLobby] = useState<Lobby>({} as Lobby);
@@ -37,7 +35,7 @@ function App() {
       if (response.type === "join") setInLobby(true);
       if (response.type === "disconnected") {
         setInLobby(false);
-        setOpenAlert(true);
+        toast("You have been disconnected from the lobby");
       }
       if (response.type === "start") setInGame(true);
       setLobby(response.payload);
@@ -51,7 +49,8 @@ function App() {
       setInLobby(false);
       setInGame(false);
 
-      setOpenAlert(true);
+      setLobby({} as Lobby);
+      toast("You have been disconnected from the lobby");
     };
   }, []); // empty dependency array ensures useEffect runs only once when the component mounts
   return (
@@ -63,23 +62,7 @@ function App() {
         {inGame && lobby.game === "CosmicHorrors" && <CosmicHorrors />}
       </div>
 
-      {openAlert && (
-        <div className="absolute top-0 right-0 p-6">
-          <Alert
-            open={openAlert}
-            onClose={() => setOpenAlert(false)}
-            animate={{
-              mount: { y: 0 },
-              unmount: { y: 100 },
-            }}
-            icon={<InformationCircleIcon width={20} height={20} />}
-            className="rounded-none border-l-4 border-[#ff0000] bg-[#ff0000]/10 font-medium text-[#ff0000]"
-          >
-            Looks like your internet connection is unstable. Please check your
-            internet connection.
-          </Alert>
-        </div>
-      )}
+      <Toaster />
     </>
   );
 }

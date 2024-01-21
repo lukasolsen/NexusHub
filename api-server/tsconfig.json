@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "typeRoots": ["shared/types/@types"],
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

@@ -1,4 +1,3 @@
-import { Avatar, Badge, Card, CardBody } from "@material-tailwind/react";
 import UserMegaMenuComponent from "./MegaMenu";
 import { User } from "../../../shared/types/user";
 import { useState } from "react";
@@ -9,6 +8,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { sendMessage } from "../service/socketService";
+import { Avatar } from "./ui/avatar";
+import { Badge } from "./ui/badge";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 
 type UserProps = {
   player: User;
@@ -62,40 +64,63 @@ const UserComponent: React.FC<UserProps> = ({ player, currentPlayerRole }) => {
   return (
     <>
       <Card
-        placeholder={"Card"}
         key={player.id}
         className="flex flex-col items-center justify-center p-2 relative select-none"
         onClick={() => {
           setMenuVisible(!menuVisible);
         }}
       >
-        <CardBody
-          className="flex flex-col items-center justify-center w-full h-full p-6 relative"
-          placeholder={"CardBody"}
-        >
-          <Avatar
-            placeholder={"Avatar"}
-            src={`https://api.dicebear.com/7.x/bottts/svg?seed=${player.id}`}
-            alt={player.name}
-            size="xl"
-          />
-
+        <CardHeader>
           <div className="flex flex-row gap-2 justify-between items-center">
             {player.name}
             {currentPlayerRole === "owner" && player.role !== "owner" && (
               <UserMegaMenuComponent menuItems={menuItems} />
             )}
           </div>
-          <Badge
-            content={player.role}
-            color={
-              (player.role === "mod" && "blue") ||
-              (player.role === "owner" && "red") ||
-              "green"
-            }
-            className="rounded-sm mt-4 absolute"
+        </CardHeader>
+
+        <CardContent>
+          <Avatar
+            placeholder={"Avatar"}
+            src={`https://api.dicebear.com/7.x/bottts/svg?seed=${player.id}`}
+            alt={player.name}
+            size="xl"
           />
-        </CardBody>
+        </CardContent>
+
+        <CardFooter className="flex flex-row gap-4 justify-evenly p-1 w-full h-full">
+          <Badge
+            style={{
+              backgroundColor:
+                player.role === "owner"
+                  ? "red"
+                  : player.role === "mod"
+                  ? "green"
+                  : "blue",
+            }}
+            content={
+              player.role === "owner"
+                ? "Owner"
+                : player.role === "mod"
+                ? "Moderator"
+                : "User"
+            }
+            color={
+              player.role === "owner"
+                ? "bg-red-500"
+                : player.role === "mod"
+                ? "bg-green-500"
+                : "bg-blue-500"
+            }
+            variant={"default"}
+          >
+            {player.role === "owner"
+              ? "Owner"
+              : player.role === "mod"
+              ? "Moderator"
+              : "User"}
+          </Badge>
+        </CardFooter>
       </Card>
     </>
   );

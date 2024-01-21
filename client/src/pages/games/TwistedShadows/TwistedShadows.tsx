@@ -1,5 +1,4 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { IconButton, Input } from "@material-tailwind/react";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
@@ -9,6 +8,7 @@ import {
 import { Data } from "../../../../../shared/types/essential";
 import BoardMinimap from "./Board";
 import TerminalSound from "../../../assets/sounds/terminal.mp3";
+import { Input } from "../../../components/ui/input";
 
 type Board = {
   tiles: string[];
@@ -102,7 +102,6 @@ const TwistedShadows: React.FC = () => {
           <motion.div
             color="green"
             className="font-vt323Regular"
-            placeholder={"Test"}
             animate={controls}
           >
             {currentText}
@@ -111,11 +110,9 @@ const TwistedShadows: React.FC = () => {
 
         <div className="flex flex-row gap-1">
           <Input
-            crossOrigin={"anonymous"}
             color="green"
             className="font-vt323Regular text-white"
-            label="Command"
-            variant="static"
+            placeholder="Enter a command"
             value={command}
             onChange={(e) => setCommand(e.target.value)}
             onKeyDown={(e) => {
@@ -137,14 +134,9 @@ const TwistedShadows: React.FC = () => {
             }}
           />
 
-          <IconButton
-            color="green"
-            ripple="light"
-            className="font-vt323Regular"
-            variant="text"
-          >
+          <div color="green" className="font-vt323Regular">
             <MagnifyingGlassIcon className="w-6 h-6 text-green-600" />
-          </IconButton>
+          </div>
         </div>
       </div>
     </div>

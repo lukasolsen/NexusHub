@@ -1,12 +1,16 @@
 {
   "scripts": {
     "socket-server": "nodemon socket-server/src/server.ts",
+    "api-server": "nodemon api-server/src/index.ts",
     "client": "npm --prefix client run dev",
     "install": "npm --prefix client install && npm install && npm --prefix socket-server install"
   },
   "dependencies": {
     "nodemon": "latest",
-    "socket.io": "^4.7.4"
+    "pg": "^8.11.3",
+    "reflect-metadata": "^0.2.1",
+    "socket.io": "^4.7.4",
+    "typeorm": "^0.3.19"
   },
   "devDependencies": {
     "@types/node": "^20.11.5"
