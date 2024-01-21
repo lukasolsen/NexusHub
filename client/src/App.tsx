@@ -4,7 +4,6 @@ import LobbyPage from "./pages/Lobby";
 import {
   connectDefaultSocket,
   disconnectDefaultSocket,
-  subscribeToMessages,
   subscribeToMessage,
 } from "./service/socketService";
 import { Lobby } from "../../shared/types/lobby";
@@ -23,11 +22,6 @@ function App() {
     console.log("Connecting socket");
     // Connect to the socket when the component mounts
     connectDefaultSocket();
-
-    // Listen to incoming messages
-    subscribeToMessages((message) => {
-      console.log("Received message:", message);
-    });
 
     subscribeToMessage("lobby", (response: Data) => {
       console.log("Received lobby:", response);
