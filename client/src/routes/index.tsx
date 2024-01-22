@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import Home from "./pages/Home";
-import LobbyPage from "./pages/Lobby";
+import Home from "../pages/Home";
+import LobbyPage from "../pages/Lobby";
 import {
   connectDefaultSocket,
   disconnectDefaultSocket,
   subscribeToMessage,
-} from "./service/socketService";
-import { Lobby } from "../../shared/types/lobby";
-import { Data } from "../../shared/types/essential";
-import TwistedShadows from "./pages/games/TwistedShadows/TwistedShadows";
-import CosmicHorrors from "./pages/games/CosmicHorrors/CosmicHorrors";
+} from "../service/socketService";
+import { Lobby } from "../../../shared/types/lobby";
+import { Data } from "../../../shared/types/essential";
+import TwistedShadows from "../pages/games/TwistedShadows/TwistedShadows";
+import CosmicHorrors from "../pages/games/CosmicHorrors/CosmicHorrors";
 import { toast } from "sonner";
-import { Toaster } from "./components/ui/sonner";
+import { Toaster } from "../components/ui/sonner";
 
 function App() {
   const [inLobby, setInLobby] = useState<boolean>(false);

@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import fs from "fs";
+import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 
 console.log("Root path", path.resolve(__dirname, "../shared"));
 
@@ -24,5 +25,5 @@ export default defineConfig({
       ),
     },
   },
-  plugins: [react()],
+  plugins: [react(), TanStackRouterVite()],
 });

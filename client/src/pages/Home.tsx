@@ -13,8 +13,8 @@ import { Input } from "../components/ui/input";
 const Home: React.FC = () => {
   const [selectedInformation, setSelectedInformation] = useState<string>("");
   const [lobbyCode, setLobbyCode] = useState<string>("");
-
   const [publicLobbies, setPublicLobbies] = useState<Lobby[]>([]);
+
   useEffect(() => {
     sendMessage("lobby", { type: "getPublicLobbies" });
 
@@ -30,15 +30,15 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="container mx-auto w-full gap-12">
-      <h1>Welcome to NexusHub</h1>
-      <p>
+    <div className="container mx-auto">
+      <h1 className="text-4xl font-bold mb-4">Welcome to NexusHub</h1>
+      <p className="text-gray-600 mb-8">
         NexusHub is a platform for playing multiplayer games with your friends.
       </p>
 
       {!selectedInformation && (
-        <div className="flex flex-row">
-          <div className="flex flex-col gap-4 w-3/12">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4 md:w-1/3">
             <Button onClick={() => setSelectedInformation("join")}>
               Join Lobby
             </Button>
@@ -50,16 +50,15 @@ const Home: React.FC = () => {
               Create Lobby
             </Button>
           </div>
-          <div>
-            <h3>Public Lobbies</h3>
+          <div className="md:w-2/3">
+            <h3 className="text-2xl font-bold mb-4">Public Lobbies</h3>
             <Accordion collapsible type="single">
               <AccordionItem value="public-lobbies"></AccordionItem>
 
               {publicLobbies &&
                 publicLobbies.map((lobby) => (
-                  <AccordionContent>
+                  <AccordionContent key={lobby.id}>
                     <LobbyItemComponent
-                      key={lobby.id}
                       lobby={lobby}
                       onClick={() => {
                         sendMessage("lobby", {
@@ -80,11 +79,11 @@ const Home: React.FC = () => {
       )}
 
       {selectedInformation === "join" && (
-        <div className="flex flex-col gap-2 w-6/12 mx-auto items-center h-full">
+        <div className="flex flex-col items-center mt-8 md:w-1/2 mx-auto">
           <Input
             value={lobbyCode}
             onChange={(e) => setLobbyCode(e.target.value)}
-            placeholder="Lobby Code"
+            placeholder="Enter Lobby Code"
             type="text"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
