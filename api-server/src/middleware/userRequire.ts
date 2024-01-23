@@ -12,7 +12,8 @@ const userRequireMiddleware = async (
   // Check if the wanted path is either register or loing
   if (
     req.path.toString() === "/api/v2/user/login" ||
-    req.path.toString() === "/api/v2/user/register"
+    req.path.toString() === "/api/v2/user/register" ||
+    req.path.toString() === "/api/v2/user/current"
   ) {
     console.log("User require middleware: Skipping login and register.");
     return next();

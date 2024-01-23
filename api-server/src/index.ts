@@ -2,6 +2,8 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import fs from "fs";
+import { createConnection } from "typeorm";
+import typeOrmConfig from "../../shared/database/config";
 
 import { createApiResponse } from "./utils/util";
 //import rateLimiterMiddleware from "./middleware/rateLimiterMiddleware";
@@ -21,6 +23,11 @@ const credentials = { key: privateKey, cert: certificate };
 // Make a express app with https
 const app: Express = express();
 const httpsServer = createServer(credentials, app);
+
+// Connect to database
+createConnection(typeOrmConfig).then(() => {
+  console.log("Connected to database");
+});
 
 //app.use(rateLimiterMiddleware);
 app.use(cors());

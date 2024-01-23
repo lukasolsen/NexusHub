@@ -1,8 +1,7 @@
 import { Request, Response, Router } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import User from "../../../../shared/models/User";
-import { createConnection } from "typeorm";
-import typeOrmConfig from "../../../../shared/database/config";
+import { getRepository } from "typeorm";
 import {
   createApiResponse,
   saltPassword,
@@ -19,10 +18,8 @@ router.post("/login", async (req: Request, res: Response) => {
     return;
   }
 
-  const connection = await createConnection(typeOrmConfig);
-
   try {
-    const userRepo = connection.getRepository(User);
+    const userRepo = getRepository(User);
 
     const user = await userRepo.findOne({ where: { username: username } });
     if (!user) {
@@ -64,8 +61,6 @@ router.post("/login", async (req: Request, res: Response) => {
     console.error(err);
     res.status(500).send("Internal Server Error");
     return;
-  } finally {
-    await connection.close();
   }
 });
 
@@ -78,10 +73,8 @@ router.post("/register", async (req: Request, res: Response) => {
     return;
   }
 
-  const connection = await createConnection(typeOrmConfig);
-
   try {
-    const userRepo = connection.getRepository(User);
+    const userRepo = getRepository(User);
 
     const user = await userRepo.findOne({ where: { username: username } });
     console.log(user);
@@ -108,8 +101,33 @@ router.post("/register", async (req: Request, res: Response) => {
     console.error(err);
     res.status(500).send("Internal Server Error");
     return;
-  } finally {
-    await connection.close();
+  }
+});
+
+router.get("/current", async (req: Request, res: Response) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    res.status(400).send("Missing token");
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "secret"
+    ) as JwtPayload;
+    const response = createApiResponse("OK", {
+      username: decoded.username,
+      id: decoded.id,
+    });
+
+    res.send(response);
+    return;
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+    return;
   }
 });
 

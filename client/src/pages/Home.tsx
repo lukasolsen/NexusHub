@@ -14,6 +14,7 @@ const Home: React.FC = () => {
   const [selectedInformation, setSelectedInformation] = useState<string>("");
   const [lobbyCode, setLobbyCode] = useState<string>("");
   const [publicLobbies, setPublicLobbies] = useState<Lobby[]>([]);
+  const [showPublicLobbies, setShowPublicLobbies] = useState<boolean>(false);
 
   useEffect(() => {
     sendMessage("lobby", { type: "getPublicLobbies" });
@@ -27,12 +28,12 @@ const Home: React.FC = () => {
           break;
       }
     });
-  }, []);
+  }, [showPublicLobbies]);
 
   return (
     <div className="container mx-auto">
       <h1 className="text-4xl font-bold mb-4">Welcome to NexusHub</h1>
-      <p className="text-gray-600 mb-8">
+      <p className="text-gray-600 dark:text-gray-300 mb-8">
         NexusHub is a platform for playing multiplayer games with your friends.
       </p>
 
@@ -51,13 +52,20 @@ const Home: React.FC = () => {
             </Button>
           </div>
           <div className="md:w-2/3">
-            <h3 className="text-2xl font-bold mb-4">Public Lobbies</h3>
+            <div className="flex flex-row items-center justify-between">
+              <h3 className="text-2xl font-bold mb-4">Public Lobbies</h3>
+              <Button
+                onClick={() => {
+                  setShowPublicLobbies(!showPublicLobbies);
+                }}
+              >
+                Refresh
+              </Button>
+            </div>
             <Accordion collapsible type="single">
-              <AccordionItem value="public-lobbies"></AccordionItem>
-
-              {publicLobbies &&
-                publicLobbies.map((lobby) => (
-                  <AccordionContent key={lobby.id}>
+              <AccordionItem value="public-lobbies">
+                {publicLobbies &&
+                  publicLobbies.map((lobby) => (
                     <LobbyItemComponent
                       lobby={lobby}
                       onClick={() => {
@@ -66,13 +74,14 @@ const Home: React.FC = () => {
                           lobbyId: lobby.id,
                         });
                       }}
+                      key={lobby.id}
                     />
-                  </AccordionContent>
-                ))}
+                  ))}
 
-              {publicLobbies.length === 0 && (
-                <h3 className="text-center">No public lobbies available</h3>
-              )}
+                {publicLobbies.length === 0 && (
+                  <h3 className="text-center">No public lobbies available</h3>
+                )}
+              </AccordionItem>
             </Accordion>
           </div>
         </div>

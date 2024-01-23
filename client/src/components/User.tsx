@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { sendMessage } from "../service/socketService";
-import { Avatar } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 
@@ -65,7 +65,7 @@ const UserComponent: React.FC<UserProps> = ({ player, currentPlayerRole }) => {
     <>
       <Card
         key={player.id}
-        className="flex flex-col items-center justify-center p-2 relative select-none"
+        className="flex flex-col items-center justify-center relative select-none bg-transparent"
         onClick={() => {
           setMenuVisible(!menuVisible);
         }}
@@ -80,12 +80,13 @@ const UserComponent: React.FC<UserProps> = ({ player, currentPlayerRole }) => {
         </CardHeader>
 
         <CardContent>
-          <Avatar
-            placeholder={"Avatar"}
-            src={`https://api.dicebear.com/7.x/bottts/svg?seed=${player.id}`}
-            alt={player.name}
-            size="xl"
-          />
+          <Avatar className="h-12 w-12">
+            <AvatarImage
+              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${player.id}`}
+              alt={player.name}
+            />
+            <AvatarFallback>{player.name}</AvatarFallback>
+          </Avatar>
         </CardContent>
 
         <CardFooter className="flex flex-row gap-4 justify-evenly p-1 w-full h-full">

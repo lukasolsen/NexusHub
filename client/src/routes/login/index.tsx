@@ -3,34 +3,22 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "../../context/AuthContext";
 
 export const LoginRoute: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const sendLoginRequest = async () => {
-    const response = await fetch(
-      "https://192.168.87.22:5000/api/v2/user/login",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  const { loginUser } = useAuth();
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data?.code === "OK") {
-        if (data?.data?.token) {
-          localStorage.setItem("token", data.data.token);
-        }
-        location.href = "/";
+  const sendLoginRequest = async () => {
+    const response = await loginUser(username, password);
+
+    if (response?.code === "OK") {
+      if (response?.data?.token) {
+        localStorage.setItem("token", response.data.token);
       }
+      location.href = "/";
     }
   };
 

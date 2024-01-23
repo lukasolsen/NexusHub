@@ -5,6 +5,7 @@ import UserComponent from "../components/User";
 import GameComponent from "../components/Game";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
+import Chat from "../components/Chat";
 
 type LobbyPageProps = {
   lobby: Lobby;
@@ -44,8 +45,6 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
 
   return (
     <div className=" container mx-auto w-full p-8">
-      <h1 className="text-3xl font-bold mb-4">Lobby</h1>
-
       <div className="flex flex-row items-center justify-between gap-6 w-full">
         <div className="flex flex-col">
           <h4 color="gray">{lobby.id}</h4>
@@ -62,13 +61,13 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
             Lobby Status:
           </p>
           <Switch
-            onChange={() => {
+            onCheckedChange={() => {
               sendMessage("lobby", {
                 type: "settings",
                 payload: { isPublic: !lobby.isPublic },
               });
             }}
-            checked={lobby?.isPublic ? true : false || false}
+            checked={lobby?.isPublic}
             color="indigo"
           />
           <p color="gray">{lobby?.isPublic ? "Public" : "Private"}</p>
@@ -101,6 +100,8 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
           {displayGames()}
         </div>
       </div>
+
+      <Chat />
     </div>
   );
 };
