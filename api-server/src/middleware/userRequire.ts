@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User from "../../../shared/models/User";
-import { createConnection, getRepository } from "typeorm";
+import { getRepository } from "typeorm";
 import { createApiResponse } from "../utils/util";
 
 const userRequireMiddleware = async (
@@ -11,8 +11,8 @@ const userRequireMiddleware = async (
 ) => {
   // Check if the wanted path is either register or loing
   if (
-    req.path.toString() === "/api/v2/auth/login" ||
-    req.path.toString() === "/api/v2/auth/register"
+    req.path.toString() === "/api/v2/user/login" ||
+    req.path.toString() === "/api/v2/user/register"
   ) {
     console.log("User require middleware: Skipping login and register.");
     return next();

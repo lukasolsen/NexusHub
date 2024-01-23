@@ -5,6 +5,8 @@ import rootRoute from "./__root";
 import { AboutRoute } from "./routes/about";
 import App from "./routes";
 import "./index.css";
+import { LoginRoute } from "./routes/login";
+import { RegisterRoute } from "./routes/register";
 
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -18,7 +20,24 @@ const aboutRoute = new Route({
   component: AboutRoute,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, aboutRoute]);
+const loginRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: LoginRoute,
+});
+
+const registerRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/register",
+  component: RegisterRoute,
+});
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  aboutRoute,
+  loginRoute,
+  registerRoute,
+]);
 
 const router = new Router({ routeTree });
 

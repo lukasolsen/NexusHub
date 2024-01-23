@@ -95,30 +95,31 @@ const UserComponent: React.FC<UserProps> = ({ player, currentPlayerRole }) => {
                 player.role === "owner"
                   ? "red"
                   : player.role === "mod"
-                  ? "green"
-                  : "blue",
+                    ? "green"
+                    : "blue",
             }}
             content={
               player.role === "owner"
                 ? "Owner"
                 : player.role === "mod"
-                ? "Moderator"
-                : "User"
+                  ? "Moderator"
+                  : "User"
             }
             color={
               player.role === "owner"
                 ? "bg-red-500"
                 : player.role === "mod"
-                ? "bg-green-500"
-                : "bg-blue-500"
+                  ? "bg-green-500"
+                  : "bg-blue-500"
             }
+            className="rounded-sm"
             variant={"default"}
           >
             {player.role === "owner"
               ? "Owner"
               : player.role === "mod"
-              ? "Moderator"
-              : "User"}
+                ? "Moderator"
+                : "User"}
           </Badge>
         </CardFooter>
       </Card>

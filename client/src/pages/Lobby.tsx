@@ -74,10 +74,11 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
           <p color="gray">{lobby?.isPublic ? "Public" : "Private"}</p>
         </div>
         <div>
-          <div className="flex flex-row">
+          <div className="flex flex-row gap-1">
             <Button
               color="indigo"
               onClick={() => sendMessage("lobby", { type: "disconnect" })}
+              className="rounded-r-none"
             >
               Disconnect
             </Button>
@@ -86,6 +87,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
               onClick={() =>
                 sendMessage("lobby", { type: "start", game: activeGame })
               }
+              className="rounded-l-none"
             >
               Start Game
             </Button>

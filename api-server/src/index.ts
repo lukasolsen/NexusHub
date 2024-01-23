@@ -1,7 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import pool from "../../shared/database/db";
+import fs from "fs";
 
 import { createApiResponse } from "./utils/util";
 //import rateLimiterMiddleware from "./middleware/rateLimiterMiddleware";
@@ -9,10 +9,18 @@ import userRequireMiddleware from "./middleware/userRequire";
 import router from "./routes";
 import { APIResponse } from "./types/response";
 import dotenv from "dotenv";
+import { createServer } from "https";
 
 dotenv.config();
 
+const privateKey = fs.readFileSync("shared/ssl/server.key", "utf8");
+const certificate = fs.readFileSync("shared/ssl/server.cert", "utf8");
+
+const credentials = { key: privateKey, cert: certificate };
+
+// Make a express app with https
 const app: Express = express();
+const httpsServer = createServer(credentials, app);
 
 //app.use(rateLimiterMiddleware);
 app.use(cors());
@@ -41,12 +49,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send(errorResponse);
 });
 
-app.listen(
+httpsServer.listen(
   parseInt(process.env.SERVER_PORT?.toString() || "3000"),
   process.env.SERVER_IP || "localhost",
   () => {
     console.log(
-      `Server running at http://${process.env.SERVER_IP}:${process.env.SERVER_PORT}/`
+      `Server running at https://${process.env.SERVER_IP}:${process.env.SERVER_PORT}/`
     );
   }
 );

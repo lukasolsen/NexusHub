@@ -1,0 +1,116 @@
+import { Request, Response, Router } from "express";
+import jwt from "jsonwebtoken";
+import User from "../../../../shared/models/User";
+import { createConnection } from "typeorm";
+import typeOrmConfig from "../../../../shared/database/config";
+import {
+  createApiResponse,
+  saltPassword,
+  verifyPasswsord,
+} from "../../utils/util";
+
+const router = Router();
+
+router.post("/login", async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    res.status(400).send("Missing username or password");
+    return;
+  }
+
+  const connection = await createConnection(typeOrmConfig);
+
+  try {
+    const userRepo = connection.getRepository(User);
+
+    const user = await userRepo.findOne({ where: { username: username } });
+    if (!user) {
+      res.status(400).send("User not found");
+      return;
+    }
+
+    const passwordMatch = await verifyPasswsord(
+      password,
+      (
+        await user
+      ).password
+    );
+
+    if (!passwordMatch) {
+      res.status(400).send("Incorrect password");
+      return;
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      {
+        username: username,
+        id: (await user).id,
+      },
+      process.env.JWT_SECRET || "secret",
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    const response = createApiResponse("OK", {
+      token,
+    });
+
+    res.send(response);
+    return;
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+    return;
+  } finally {
+    await connection.close();
+  }
+});
+
+router.post("/register", async (req: Request, res: Response) => {
+  const { username, password, email } = req.body;
+  console.log(req.body);
+
+  if (!username || !password || !email) {
+    res.status(400).send("Missing username, password, or email");
+    return;
+  }
+
+  const connection = await createConnection(typeOrmConfig);
+
+  try {
+    const userRepo = connection.getRepository(User);
+
+    const user = await userRepo.findOne({ where: { username: username } });
+    console.log(user);
+    if (user) {
+      res.status(400).send("User already exists");
+      return;
+    }
+
+    const newUser = new User();
+    newUser.username = username;
+    newUser.password = saltPassword(password);
+    newUser.email = email;
+
+    await userRepo.save(newUser);
+
+    const response = createApiResponse("OK", {
+      username: newUser.username,
+      email: newUser.email,
+    });
+
+    res.send(response);
+    return;
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+    return;
+  } finally {
+    await connection.close();
+  }
+});
+
+export const userRouter = router;

@@ -6,6 +6,7 @@
     "install": "npm --prefix client install && npm install && npm --prefix socket-server install"
   },
   "dependencies": {
+    "dotenv": "^16.3.2",
     "nodemon": "latest",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1",
