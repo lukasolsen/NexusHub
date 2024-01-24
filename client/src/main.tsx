@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, Router, Route } from "@tanstack/react-router";
 import rootRoute from "./__root";
@@ -7,6 +6,8 @@ import App from "./routes";
 import "./index.css";
 import { LoginRoute } from "./routes/login";
 import { RegisterRoute } from "./routes/register";
+import ProfileRouteToken from "./routes/profile";
+import ProfileRoute from "./routes/profile";
 
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -32,11 +33,18 @@ const registerRoute = new Route({
   component: RegisterRoute,
 });
 
+const profileIdRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/profile/$profileId",
+  component: ProfileRouteToken,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   aboutRoute,
   loginRoute,
   registerRoute,
+  profileIdRoute,
 ]);
 
 const router = new Router({ routeTree });

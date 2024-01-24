@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import UserMenu from "./UserMenu";
+import { Button } from "./ui/button";
 
 export const Navbar = () => {
   const { checkToken, userDetails } = useAuth();
@@ -35,7 +36,9 @@ export const Navbar = () => {
               to="/login"
               className={`mx-2 ${activeLinkClasses} flex flex-row`}
             >
-              <UserIcon className="h-6 w-6" />
+              <Button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Login
+              </Button>
             </Link>
           )}
         </div>
