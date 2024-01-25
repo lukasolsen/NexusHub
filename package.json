@@ -3,7 +3,8 @@
     "socket-server": "nodemon socket-server/src/server.ts",
     "api-server": "nodemon api-server/src/index.ts",
     "client": "npm --prefix client run dev",
-    "install": "npm --prefix client install && npm install && npm --prefix socket-server install"
+    "install": "npm --prefix client install && npm install && npm --prefix socket-server install",
+    "test": "jest"
   },
   "dependencies": {
     "dotenv": "^16.3.2",
@@ -14,6 +15,8 @@
     "typeorm": "^0.3.19"
   },
   "devDependencies": {
-    "@types/node": "^20.11.5"
+    "@types/node": "^20.11.6",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2"
   }
 }

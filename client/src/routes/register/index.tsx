@@ -11,7 +11,7 @@ export const RegisterRoute: React.FC = () => {
 
   const sendRegisterRequest = async () => {
     const response = await fetch(
-      "https://192.168.87.22:5000/api/v2/user/register",
+      "https://192.168.10.142:5000/api/v2/user/register",
       {
         method: "POST",
         body: JSON.stringify({

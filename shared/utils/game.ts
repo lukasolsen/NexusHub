@@ -50,4 +50,8 @@ export abstract class Game {
 
     return !!socket;
   }
+
+  public getUsers(): User[] {
+    return this.users;
+  }
 }

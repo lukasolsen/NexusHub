@@ -81,6 +81,10 @@ class GameManager {
       const game = this.activeGames.get(lobby.gameId);
       if (game) {
         game.handleDisconnect(socket);
+        // If the game has no more players, remove it
+        if (game.getUsers().length === 0) {
+          this.activeGames.delete(lobby.gameId);
+        }
       }
     }
   }
