@@ -4,6 +4,8 @@ import GameManager from "./GameManager";
 import SocketManager from "../SocketManager";
 import LobbyStorage from "../LobbyStorage";
 import { CustomSocket } from "../../../shared/types/essential";
+import { getManifest } from "../../../shared/utils/game-loader";
+import * as path from "path";
 
 class LobbyManager {
   private leaveLobby(socket: CustomSocket): void {
@@ -43,6 +45,11 @@ class LobbyManager {
       }
 
       lobby.game = data.game;
+      const gameData = getManifest(data.game);
+      // Edit the client, so it's relative to the client folder: <game>/client/<game>.js
+      gameData.client = path.join(gameData.file, gameData.client);
+
+      lobby.gameData = gameData;
 
       const io = SocketManager.getInstance().getIO();
 

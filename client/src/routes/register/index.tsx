@@ -3,29 +3,19 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "../../context/AuthContext";
 
 export const RegisterRoute: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
-  const sendRegisterRequest = async () => {
-    const response = await fetch(
-      "https://192.168.10.142:5000/api/v2/user/register",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          username: username,
-          password: password,
-          email: email,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  const { registerUser } = useAuth();
 
-    if (response.ok) {
+  const sendRegisterRequest = async () => {
+    const response = await registerUser(username, email, password);
+
+    if (response) {
       const data = await response.json();
       console.log(data);
     }

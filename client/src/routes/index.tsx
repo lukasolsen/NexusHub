@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { ReactNode, useEffect, useState } from "react";
 import Home from "../pages/Home";
 import LobbyPage from "../pages/Lobby";
 import {
@@ -8,8 +9,6 @@ import {
 } from "../service/socketService";
 import { Lobby } from "../../../shared/types/lobby";
 import { Data } from "../../../shared/types/essential";
-import TwistedShadows from "../pages/games/TwistedShadows/TwistedShadows";
-import CosmicHorrors from "../pages/games/CosmicHorrors/CosmicHorrors";
 import { toast } from "sonner";
 import { Toaster } from "../components/ui/sonner";
 
@@ -17,6 +16,8 @@ function App() {
   const [inLobby, setInLobby] = useState<boolean>(false);
   const [inGame, setInGame] = useState<boolean>(false);
   const [lobby, setLobby] = useState<Lobby>({} as Lobby);
+  const [game, setGame] = useState<string>("");
+  const [Comp, setComponent] = useState<ReactNode>();
 
   useEffect(() => {
     console.log("Connecting socket");
@@ -31,7 +32,11 @@ function App() {
         setInLobby(false);
         toast("You have been disconnected from the lobby");
       }
-      if (response.type === "start") setInGame(true);
+      if (response.type === "start") {
+        setInGame(true);
+
+        setGame(response.payload.gameData?.client);
+      }
       setLobby(response.payload);
     });
 
@@ -46,14 +51,27 @@ function App() {
       setLobby({} as Lobby);
       toast("You have been disconnected from the lobby");
     };
-  }, []); // empty dependency array ensures useEffect runs only once when the component mounts
+  }, []);
+
+  useEffect(() => {
+    const loadComponent = async () => {
+      if (game) {
+        console.log("Loading game:", game);
+        const Comp = await import(`../../../../shared/games/${game}`);
+        setComponent(() => Comp.default);
+      }
+    };
+
+    loadComponent();
+  }, [game]);
+
   return (
     <>
       <div className="w-full min-h-screen">
         {!inLobby && <Home />}
         {inLobby && !inGame && <LobbyPage lobby={lobby} />}
-        {inGame && lobby.game === "TwistedShadows" && <TwistedShadows />}
-        {inGame && lobby.game === "CosmicHorrors" && <CosmicHorrors />}
+
+        {inGame && game && <div className="w-full h-full">{Comp}</div>}
       </div>
 
       <Toaster />

@@ -6,6 +6,8 @@ import GameManager from "./manager/GameManager";
 import SocketManager from "./SocketManager";
 import { CustomSocket, Data } from "../../shared/types/essential";
 import { readFileSync } from "fs";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 class ServerManager {
   private httpServer: any;
@@ -52,7 +54,7 @@ class ServerManager {
       });
     });
 
-    this.listen("192.168.10.142", 3000);
+    this.listen(process.env.HOST_IP, 3000);
   }
 
   private listen(ip: string, port: number) {

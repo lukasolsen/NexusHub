@@ -58,10 +58,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 httpsServer.listen(
   parseInt(process.env.SERVER_PORT?.toString() || "3000"),
-  process.env.SERVER_IP || "localhost",
+  process.env.HOST_IP || "localhost",
   () => {
     console.log(
-      `Server running at https://${process.env.SERVER_IP}:${process.env.SERVER_PORT}/`
+      `Server running at https://${process.env.HOST_IP}:${process.env.SERVER_PORT}/`
     );
   }
 );

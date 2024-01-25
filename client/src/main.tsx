@@ -7,7 +7,6 @@ import "./index.css";
 import { LoginRoute } from "./routes/login";
 import { RegisterRoute } from "./routes/register";
 import ProfileRouteToken from "./routes/profile";
-import ProfileRoute from "./routes/profile";
 
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,

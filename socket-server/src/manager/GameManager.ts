@@ -1,11 +1,9 @@
-// server/GameManager.ts
-import { Server, Socket } from "socket.io";
-import * as fs from "fs";
-import * as path from "path";
 import { CustomSocket } from "../../../shared/types/essential";
 import { Game } from "../../../shared/utils/game";
 import SocketManager from "../SocketManager";
 import LobbyStorage from "../LobbyStorage";
+import { listManifests } from "../../../shared/utils/game-loader";
+import * as path from "path";
 
 class GameManager {
   private static instance: GameManager | null = null;
@@ -37,23 +35,16 @@ class GameManager {
   }
 
   private loadGames(): void {
-    const gamesPath = path.join(__dirname, "../games");
+    console.log("path", __dirname);
 
-    const folders = fs.readdirSync(gamesPath);
+    listManifests().map((manifest) => {
+      if (manifest) {
+        const gamesPath = path.join(__dirname, "../../../shared/games");
+        console.log(gamesPath);
 
-    folders.map((file) => {
-      // Only find folders, go into the folder and read the manifest.json and look for "main" field and load that file
-      if (fs.lstatSync(path.join(gamesPath, file)).isDirectory()) {
-        const manifestPath = path.join(gamesPath, file, "manifest.json");
-        const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-        const GameClass = require(path.join(
-          gamesPath,
-          file,
-          manifest.main
-        )).default;
-
-        // Assume each game has a unique identifier, replace it accordingly
-        this.games.set(manifest.name, GameClass);
+        const game =
+          require(`${gamesPath}/${manifest.file}/${manifest.main}`).default;
+        this.games.set(manifest.name, game);
       }
     });
   }

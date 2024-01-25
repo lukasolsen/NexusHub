@@ -1,4 +1,4 @@
-const MAIN_URI = "https://192.168.10.142:5000/api/v2/";
+const MAIN_URI = `https://${import.meta.env.VITE_HOST_IP}:5000/api/v2/`;
 
 export const login = async (username: string, password: string) => {
   const response = await fetch(MAIN_URI + "user/login", {

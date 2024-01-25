@@ -3,6 +3,8 @@
     "typeRoots": ["shared/types/@types"],
 
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+
+    "jsx": "react"
   }
 }

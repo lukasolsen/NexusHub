@@ -42,6 +42,15 @@ class LobbyStorage {
       users: [newUser],
       game: "TwistedShadows",
       gameId: null,
+
+      gameData: {
+        description: "",
+        main: "",
+        name: "",
+        client: "",
+        file: "",
+      },
+
       isPublic: false,
       name: newUser.name + "'s Lobby",
       bannedUsers: [],

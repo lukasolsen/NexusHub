@@ -9,6 +9,13 @@ export interface Lobby {
 
   game: string;
   gameId: string;
+  gameData: {
+    name: string;
+    description: string;
+    main: string;
+    client?: string;
+    file: string; 
+  };
 
   games?: string[];
 

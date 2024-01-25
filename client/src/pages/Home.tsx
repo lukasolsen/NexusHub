@@ -5,7 +5,6 @@ import { Lobby } from "../../../shared/types/lobby";
 import { Button } from "../components/ui/button";
 import {
   Accordion,
-  AccordionContent,
   AccordionItem,
 } from "../components/ui/accordion";
 import { Input } from "../components/ui/input";

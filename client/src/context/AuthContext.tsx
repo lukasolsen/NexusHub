@@ -10,7 +10,11 @@ type AuthContextType = {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   loginUser: (username: string, password: string) => Promise<any>;
-  registerUser: (username: string, email: string, password: string) => void;
+  registerUser: (
+    username: string,
+    email: string,
+    password: string
+  ) => Promise<any>;
 };
 
 const AuthContext = createContext({} as AuthContextType);
@@ -72,6 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       checkToken();
     }
+
+    return response;
   };
 
   // Provide the context values to the components

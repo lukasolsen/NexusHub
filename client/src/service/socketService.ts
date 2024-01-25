@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { Data } from "../../../shared/types/essential";
 
-const socket = io("https://192.168.10.142:3000", {
+const socket = io(`https://${import.meta.env.VITE_HOST_IP}:3000`, {
   transports: ["websocket"],
 });
 
