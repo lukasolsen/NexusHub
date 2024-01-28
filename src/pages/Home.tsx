@@ -3,10 +3,7 @@ import { sendMessage, subscribeToMessage } from "../service/socketService";
 import LobbyItemComponent from "../components/LobbyItem";
 import { Lobby } from "../../../shared/types/lobby";
 import { Button } from "../components/ui/button";
-import {
-  Accordion,
-  AccordionItem,
-} from "../components/ui/accordion";
+import { Accordion, AccordionItem } from "../components/ui/accordion";
 import { Input } from "../components/ui/input";
 
 const Home: React.FC = () => {

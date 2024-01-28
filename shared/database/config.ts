@@ -3,6 +3,7 @@ import { config } from "dotenv";
 config();
 
 import User from "../models/User";
+import Game from "../models/Game";
 
 const typeOrmConfig: PostgresConnectionOptions = {
   type: "postgres",
@@ -14,7 +15,7 @@ const typeOrmConfig: PostgresConnectionOptions = {
 
   synchronize: true,
   logging: false,
-  entities: [User],
+  entities: [User, Game],
 };
 
 export default typeOrmConfig;

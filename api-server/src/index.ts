@@ -2,16 +2,13 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import fs from "fs";
-import { createConnection } from "typeorm";
-import typeOrmConfig from "../../shared/database/config";
-
 import { createApiResponse } from "./utils/util";
-//import rateLimiterMiddleware from "./middleware/rateLimiterMiddleware";
 import userRequireMiddleware from "./middleware/userRequire";
 import router from "./routes";
 import { APIResponse } from "./types/response";
 import dotenv from "dotenv";
 import { createServer } from "https";
+import fileUpload from "express-fileupload";
 
 dotenv.config();
 
@@ -24,17 +21,18 @@ const credentials = { key: privateKey, cert: certificate };
 const app: Express = express();
 const httpsServer = createServer(credentials, app);
 
-// Connect to database
-createConnection(typeOrmConfig).then(() => {
-  console.log("Connected to database");
-});
-
 //app.use(rateLimiterMiddleware);
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(userRequireMiddleware);
+app.use(
+  fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 },
+    abortOnLimit: true,
+  })
+);
 
 app.use("/api/v2", router);
 

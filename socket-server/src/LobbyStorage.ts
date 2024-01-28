@@ -43,6 +43,7 @@ class LobbyStorage {
       game: "TwistedShadows",
       gameId: null,
 
+      gameDataId: null,
       gameData: {
         description: "",
         main: "",

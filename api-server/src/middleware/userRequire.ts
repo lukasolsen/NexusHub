@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import User from "../../../shared/models/User";
-import { getRepository } from "typeorm";
+import { PostgresSource } from "../../../shared/database/db";
 import { createApiResponse } from "../utils/util";
 
 const userRequireMiddleware = async (
@@ -39,7 +39,9 @@ const userRequireMiddleware = async (
       }
 
       // Find the user with the given id
-      const user = getRepository(User).findOne({ where: { id: decoded.id } });
+      const user = PostgresSource.getRepository(User).findOne({
+        where: { id: decoded.id },
+      });
 
       if (!user) {
         return res

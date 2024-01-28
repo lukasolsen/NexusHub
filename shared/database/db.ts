@@ -1,11 +1,19 @@
-import { Pool } from "pg";
+import { DataSource } from "typeorm";
+import typeOrmConfig from "./config";
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  port: parseInt(process.env.DB_PORT || "5432"),
-  password: process.env.DB_PASSWORD,
-});
+const PostgresSource = new DataSource(typeOrmConfig);
 
-export default pool;
+let isInitialized = false;
+
+if (!isInitialized) {
+  PostgresSource.initialize()
+    .then(() => {
+      console.log("Data Source has been initialized!");
+      isInitialized = true;
+    })
+    .catch((err) => {
+      console.error("Error during Data Source initialization", err);
+    });
+}
+
+export { PostgresSource };

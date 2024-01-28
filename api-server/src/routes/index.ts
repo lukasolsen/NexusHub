@@ -1,5 +1,6 @@
-import { Router, NextFunction, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { userRouter } from "./user";
+import { gameRouter } from "./game";
 
 const router = Router();
 
@@ -8,5 +9,6 @@ router.get("/", (req: Request, res: Response) => {
 });
 
 router.use("/user", userRouter);
+router.use("/game", gameRouter);
 
 export default router;

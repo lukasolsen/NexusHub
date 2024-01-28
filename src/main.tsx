@@ -7,6 +7,7 @@ import "./index.css";
 import { LoginRoute } from "./routes/login";
 import { RegisterRoute } from "./routes/register";
 import ProfileRouteToken from "./routes/profile";
+import GameUpload from "./routes/game";
 
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
@@ -38,12 +39,19 @@ const profileIdRoute = new Route({
   component: ProfileRouteToken,
 });
 
+const gameRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/game",
+  component: GameUpload,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   aboutRoute,
   loginRoute,
   registerRoute,
   profileIdRoute,
+  gameRoute,
 ]);
 
 const router = new Router({ routeTree });

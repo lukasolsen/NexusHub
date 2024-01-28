@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { ChatTypes, getChatStyle } from "../../../shared/utils/chat";
+import { ChatTypes, getChatStyle } from "../../shared/utils/chat";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { SendIcon } from "lucide-react";

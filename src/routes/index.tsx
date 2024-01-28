@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Home from "../pages/Home";
 import LobbyPage from "../pages/Lobby";
 import {
@@ -11,13 +11,13 @@ import { Lobby } from "../../../shared/types/lobby";
 import { Data } from "../../../shared/types/essential";
 import { toast } from "sonner";
 import { Toaster } from "../components/ui/sonner";
+import GameUI from "../components/GameUI";
 
 function App() {
   const [inLobby, setInLobby] = useState<boolean>(false);
   const [inGame, setInGame] = useState<boolean>(false);
   const [lobby, setLobby] = useState<Lobby>({} as Lobby);
   const [game, setGame] = useState<string>("");
-  const [Comp, setComponent] = useState<ReactNode>();
 
   useEffect(() => {
     console.log("Connecting socket");
@@ -53,25 +53,13 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
-    const loadComponent = async () => {
-      if (game) {
-        console.log("Loading game:", game);
-        const Comp = await import(`../../../../shared/games/${game}`);
-        setComponent(() => Comp.default);
-      }
-    };
-
-    loadComponent();
-  }, [game]);
-
   return (
     <>
       <div className="w-full min-h-screen">
         {!inLobby && <Home />}
         {inLobby && !inGame && <LobbyPage lobby={lobby} />}
 
-        {inGame && game && <div className="w-full h-full">{Comp}</div>}
+        {inGame && game && <GameUI gameId={lobby.gameDataId} />}
       </div>
 
       <Toaster />

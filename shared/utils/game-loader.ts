@@ -3,31 +3,45 @@ import * as path from "path";
 
 const gamesPath = path.join(__dirname, "../../shared/games");
 
-export const listManifests = () => {
-  const folders = fs.readdirSync(gamesPath);
+export const getManifest = (user_id: string, game_id: string) => {
+  const gamePath = path.join(gamesPath, user_id, game_id);
 
-  return folders.map((file) => {
-    // Only find folders, go into the folder and read the manifest.json and look for "main" field and load that file
-    if (fs.lstatSync(path.join(gamesPath, file)).isDirectory()) {
-      const manifestPath = path.join(gamesPath, file + "/manifest.json");
-      const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  if (fs.lstatSync(gamePath).isDirectory()) {
+    const manifestPath = path.join(gamePath, "/manifest.json");
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
-      return {
-        name: manifest.name,
-        description: manifest.description,
+    return {
+      name: manifest.name,
+      description: manifest.description,
 
-        // Assume each game has a unique identifier, replace it accordingly
-        main: manifest.main,
-        client: manifest?.client,
+      // Assume each game has a unique identifier, replace it accordingly
+      main: manifest.main,
+      client: manifest?.client,
 
-        file: file,
-      };
-    }
-  });
+      file: game_id,
+    };
+  }
 };
 
-export const getManifest = (game: string) => {
-  const manifests = listManifests();
+export const listGames = () => {
+  // Loop inside the games folder, something to note is that the first of folders you'll see is user id folders. We need to go inside each folder, and then get the manifest.json file
+  const users = fs.readdirSync(gamesPath);
 
-  return manifests.find((manifest) => manifest.name === game);
+  const games = users.reduce((acc, user) => {
+    const userPath = path.join(gamesPath, user);
+    const userGames = fs.readdirSync(userPath);
+
+    const games = userGames.map((game) => {
+      const manifest = getManifest(user, game);
+      return {
+        ...manifest,
+        owner_id: user,
+        id: game,
+      };
+    });
+
+    return [...acc, ...games];
+  }, []);
+
+  return games;
 };

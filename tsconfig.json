@@ -1,10 +1,36 @@
 {
   "compilerOptions": {
-    "typeRoots": ["shared/types/@types"],
+    "typeRoots": ["shared/@types", "node_modules/@types"],
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable", "WebWorker"],
+    "module": "ESNext",
+    "skipLibCheck": true,
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
-    "jsx": "react"
-  }
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared"],
+    },
+    "types": ["vite/client"],
+    "esModuleInterop": true,
+  },
+  "include": ["src", "shared/utils/chat.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }],
 }

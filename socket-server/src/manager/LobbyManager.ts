@@ -34,19 +34,31 @@ class LobbyManager {
     }
   }
 
-  private startGame(socket: CustomSocket, data: { game: string }): void {
+  private async startGame(
+    socket: CustomSocket,
+    data: { game: string }
+  ): Promise<void> {
     const lobby = LobbyStorage.getInstance().getLobbiesFromSocket(socket);
     if (lobby) {
       lobby.gameId = generateUserId();
 
-      const allowedGames = GameManager.getInstance().getGames();
-      if (!allowedGames.includes(data.game)) {
+      const allowedGames = await GameManager.getInstance().getGames();
+
+      console.log(data.game, allowedGames);
+
+      const game = allowedGames.find((game) => game.name === data.game);
+
+      if (!game) {
         return;
       }
 
       lobby.game = data.game;
-      const gameData = getManifest(data.game);
-      // Edit the client, so it's relative to the client folder: <game>/client/<game>.js
+      const gameData = getManifest(
+        game.owner_id.toString(),
+        game.id.toString()
+      );
+      lobby.gameDataId = game.id;
+
       gameData.client = path.join(gameData.file, gameData.client);
 
       lobby.gameData = gameData;
@@ -70,7 +82,6 @@ class LobbyManager {
       socket.join(lobby.id);
       lobby.users.push(turnToUser(socket));
       const io = SocketManager.getInstance().getIO();
-      lobby.games = GameManager.getInstance().getGames();
 
       io.to(lobby.id).emit("lobby", {
         type: "join",
@@ -90,8 +101,6 @@ class LobbyManager {
     socket.join(lobby.id);
     console.log("User - " + socket.id + " created lobby - " + lobby.id);
     const io = SocketManager.getInstance().getIO();
-
-    lobby.games = GameManager.getInstance().getGames();
 
     socket.emit("lobby", {
       type: "create",

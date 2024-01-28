@@ -1,19 +1,38 @@
 import { CustomSocket } from "../../../shared/types/essential";
-import { Game } from "../../../shared/utils/game";
+import { Game as GameUtil } from "../../../shared/utils/game";
+import Game from "../../../shared/models/Game";
 import SocketManager from "../SocketManager";
 import LobbyStorage from "../LobbyStorage";
-import { listManifests } from "../../../shared/utils/game-loader";
+import { listGames } from "../../../shared/utils/game-loader";
 import * as path from "path";
 
 class GameManager {
   private static instance: GameManager | null = null;
+  private activeGames: Map<string, GameUtil> = new Map();
   private games: Map<string, any> = new Map();
-  private activeGames: Map<string, Game> = new Map();
 
   private constructor() {
-    this.loadGames();
-
     this.activeGames = new Map();
+
+    this.loadGames();
+  }
+
+  private async loadGames(): Promise<void> {
+    const games = await this.getGames();
+
+    games.forEach((game) => {
+      const gamePath = path.join(
+        __dirname,
+        "../../../shared/games",
+        game.owner_id.toString(),
+        game.id.toString(),
+        game.main
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const gameClass = require(gamePath).default;
+      this.games.set(game.name, gameClass);
+    });
   }
 
   public handleGameAction(socket: CustomSocket, data: any): void {
@@ -34,23 +53,10 @@ class GameManager {
     return GameManager.instance;
   }
 
-  private loadGames(): void {
-    console.log("path", __dirname);
+  public getGames(): any[] {
+    const games = listGames();
 
-    listManifests().map((manifest) => {
-      if (manifest) {
-        const gamesPath = path.join(__dirname, "../../../shared/games");
-        console.log(gamesPath);
-
-        const game =
-          require(`${gamesPath}/${manifest.file}/${manifest.main}`).default;
-        this.games.set(manifest.name, game);
-      }
-    });
-  }
-
-  public getGames(): string[] {
-    return Array.from(this.games.keys());
+    return games;
   }
 
   public startGame(lobbyId: string, game: string, gameId: string): void {

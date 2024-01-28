@@ -1,0 +1,8 @@
+{
+  "name": "Cool Game",
+  "version": "1.0.0",
+  "description": "Example game for the Game Framework",
+
+  "main": "server/index.ts",
+  "client": "client/app.js"
+}

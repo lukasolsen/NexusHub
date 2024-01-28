@@ -2,9 +2,9 @@ import { Card } from "./ui/card";
 
 type GameComponentProps = {
   index: number;
-  activeGame: string;
+  activeGame: any;
   setActiveGame: (game: string) => void;
-  _: string;
+  _: any;
 };
 
 const GameComponent: React.FC<GameComponentProps> = ({
@@ -17,7 +17,7 @@ const GameComponent: React.FC<GameComponentProps> = ({
     <Card
       key={index}
       className={`w-full h-40 relative rounded-sm border-4 hover:border-indigo-300 transition-all duration-300 border-gray-700 cursor-pointer ${
-        activeGame === _ && "border-indigo-500"
+        activeGame.id === _.id && "border-indigo-500"
       }`}
       onClick={() => setActiveGame(_)}
       style={{
@@ -28,7 +28,7 @@ const GameComponent: React.FC<GameComponentProps> = ({
     >
       <div className="absolute bottom-0 right-0 left-0 w-full text-center bg-opacity-50 bg-gray-900 p-2">
         <h6 color="white" className="font-normal">
-          {_}
+          {_.name}
         </h6>
       </div>
     </Card>

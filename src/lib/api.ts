@@ -46,3 +46,27 @@ export const currentUser = async (token: string) => {
 
   return response.json();
 };
+
+export const getGames = async () => {
+  const response = await fetch(MAIN_URI + "game/games", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token") || "",
+    },
+  });
+
+  return response.json();
+};
+
+export const getGame = async (id: string) => {
+  const response = await fetch(MAIN_URI + "game/games/" + id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token") || "",
+    },
+  });
+
+  return response.json();
+};

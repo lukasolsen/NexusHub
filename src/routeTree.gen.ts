@@ -7,6 +7,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as RegisterIndexImport } from './routes/register/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as LoginIndexImport } from './routes/login/index'
+import { Route as GameIndexImport } from './routes/game/index'
 import { Route as AboutIndexImport } from './routes/about/index'
 
 // Create/Update Routes
@@ -31,6 +32,11 @@ const LoginIndexRoute = LoginIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const GameIndexRoute = GameIndexImport.update({
+  path: '/game/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AboutIndexRoute = AboutIndexImport.update({
   path: '/about/',
   getParentRoute: () => rootRoute,
@@ -46,6 +52,10 @@ declare module '@tanstack/react-router' {
     }
     '/about/': {
       preLoaderRoute: typeof AboutIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/game/': {
+      preLoaderRoute: typeof GameIndexImport
       parentRoute: typeof rootRoute
     }
     '/login/': {
@@ -68,6 +78,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AboutIndexRoute,
+  GameIndexRoute,
   LoginIndexRoute,
   ProfileIndexRoute,
   RegisterIndexRoute,

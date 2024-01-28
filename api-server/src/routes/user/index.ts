@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import User from "../../../../shared/models/User";
-import { getRepository } from "typeorm";
+import { PostgresSource } from "../../../../shared/database/db";
 import {
   createApiResponse,
   saltPassword,
@@ -19,7 +19,7 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 
   try {
-    const userRepo = getRepository(User);
+    const userRepo = PostgresSource.getRepository(User);
 
     const user = await userRepo.findOne({ where: { username: username } });
     if (!user) {
@@ -74,7 +74,7 @@ router.post("/register", async (req: Request, res: Response) => {
   }
 
   try {
-    const userRepo = getRepository(User);
+    const userRepo = PostgresSource.getRepository(User);
 
     const user = await userRepo.findOne({ where: { username: username } });
     console.log(user);

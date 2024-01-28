@@ -6,13 +6,19 @@ import GameComponent from "../components/Game";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
 import Chat from "../components/Chat";
+import { useQuery } from "react-query";
+import { getGames } from "../lib/api";
 
 type LobbyPageProps = {
   lobby: Lobby;
 };
 
 const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
-  const [activeGame, setActiveGame] = useState<string>("");
+  const { data: games, status } = useQuery("games", getGames, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const [activeGame, setActiveGame] = useState<any>({} as any);
 
   const displayUsers = () => {
     const currentPlayerRole = lobby.users.find(
@@ -28,10 +34,12 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
     ));
   };
 
+  console.log(games);
+
   const displayGames = () => {
     return (
-      lobby.games &&
-      lobby.games.map((_, index: number) => (
+      games &&
+      games.map((_, index: number) => (
         <GameComponent
           key={index}
           _={_}
@@ -84,7 +92,7 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
             <Button
               color="indigo"
               onClick={() =>
-                sendMessage("lobby", { type: "start", game: activeGame })
+                sendMessage("lobby", { type: "start", game: activeGame.name })
               }
               className="rounded-l-none"
             >
@@ -97,7 +105,8 @@ const LobbyPage: React.FC<LobbyPageProps> = ({ lobby }) => {
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Games</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-12">
-          {displayGames()}
+          {games && games.length === 0} <h3>No games</h3>
+          {games && games.length !== 0 && displayGames()}
         </div>
       </div>
 

@@ -1,5 +1,3 @@
-// SocketManager.ts
-
 import { Server } from "socket.io";
 
 class SocketManager {
